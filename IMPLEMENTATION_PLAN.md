@@ -3,7 +3,7 @@
 ## Status
 
 - Planning iterations: 3 (re-verified: codebase still empty, plan still matches all four specs; no changes needed)
-- Build iterations: 13
+- Build iterations: 14
 - Last updated: 2026-11-01
 
 Codebase is empty (no package.json, no src). Everything below is unimplemented. One task = one build iteration.
@@ -26,7 +26,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Onboarding: under ten questions, one per screen, skippable, editable later (spec: pwa-shell-offline.md)
 - [x] Export / import JSON with schema validation; malformed file shows clear error and changes nothing; unit tests (spec: pwa-shell-offline.md)
 - [x] Settings screen: export, import, delete all data (returns to onboarding), theme, reduce motion, advice data "last updated" (spec: pwa-shell-offline.md)
-- [ ] Web manifest + maskable icons + vite-plugin-pwa service worker precaching shell and data; update-ready prompt that never reloads mid-use or in crisis mode (spec: pwa-shell-offline.md)
+- [x] Web manifest + maskable icons + vite-plugin-pwa service worker precaching shell and data; update-ready prompt that never reloads mid-use or in crisis mode (spec: pwa-shell-offline.md)
 - [ ] Optional Battery Status hint (<20 percent suggests Crisis mode), progressive enhancement (spec: pwa-shell-offline.md)
 - [ ] Smoke tests: offline reload renders all three areas; no cross-origin requests at runtime; delete-all returns to onboarding; Lighthouse/installability check (spec: pwa-shell-offline.md)
 - [ ] Bundle budget check: Crisis + shell JS under 150 KB gzipped, three.js in separate chunk (spec: pwa-shell-offline.md)

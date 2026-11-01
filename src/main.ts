@@ -5,6 +5,8 @@ import { effectiveReduceMotion, readDisplaySettings } from './logic/settings';
 import { getStore } from './storage/instance';
 import { logNeedsReview } from './ui/dev-report';
 
+import { startUpdatePrompt } from './ui/update-prompt';
+
 applyTheme();
 logNeedsReview();
 
@@ -22,3 +24,4 @@ void getStore()
 
 const app = document.getElementById('app');
 if (app) startRouter(app);
+startUpdatePrompt();
