@@ -43,6 +43,31 @@ describe('crisis data files', () => {
     expect(power?.steps.length).toBeGreaterThanOrEqual(7);
   });
 
+  it('covers every required power cut step, in order, with the right conditions', () => {
+    const power = playbooks.find((p) => p.id === 'power-cut');
+    const byId = new Map(power?.steps.map((s) => [s.id, s]));
+    const required = [
+      'fuse-board',
+      'report-105',
+      'torches',
+      'fridge-shut',
+      'boiler-needs-power',
+      'charge-phone',
+      'gas-hob',
+    ];
+    expect(power?.steps.map((s) => s.id)).toEqual(required);
+    expect(byId.get('fuse-board')?.text).toMatch(/fuse board.*neighbour/i);
+    expect(byId.get('report-105')?.text).toContain('105');
+    expect(byId.get('torches')?.text).toMatch(/torches.*not candles/i);
+    expect(byId.get('fridge-shut')?.note).toMatch(/4 hours/);
+    expect(byId.get('boiler-needs-power')?.note).toMatch(/one warm room/i);
+    expect(byId.get('charge-phone')?.text).toMatch(/power bank/i);
+    expect(byId.get('charge-phone')?.note).toMatch(/low power/i);
+    expect(byId.get('gas-hob')?.note).toMatch(/window/i);
+    const conditional = power?.steps.filter((s) => s.when).map((s) => s.id);
+    expect(conditional).toEqual(['boiler-needs-power', 'gas-hob']);
+  });
+
   it('gives each call card either a number or a profile source', () => {
     for (const c of callCards) expect(Boolean(c.number) !== Boolean(c.fromProfile)).toBe(true);
   });
