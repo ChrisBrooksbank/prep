@@ -15,7 +15,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] ESLint (typescript-eslint) + Prettier configs and scripts `lint`, `format:check`, `typecheck` (spec: AGENTS.md)
 - [x] Vitest with one trivial passing test; script `test:run` (spec: AGENTS.md)
 - [x] Playwright config against `vite preview`, one smoke test that the page loads; script `test:smoke` (spec: AGENTS.md)
-- [ ] `npm run check` chaining typecheck, lint, format check, test:run, build, test:smoke; add `.gitignore` entries (node_modules, dist, test-results) (spec: AGENTS.md)
+- [x] `npm run check` chaining typecheck, lint, format check, test:run, build, test:smoke; add `.gitignore` entries (node_modules, dist, test-results) (spec: AGENTS.md)
 
 ### 2. PWA shell and offline
 - [ ] Design tokens (CSS variables) from prototype palette; bundle Barlow Condensed / IBM Plex Sans / IBM Plex Mono locally (woff2 via fontsource or files, no CDN); dark default, `prefers-color-scheme`, high-contrast option (spec: pwa-shell-offline.md)
