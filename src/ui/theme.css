@@ -318,3 +318,96 @@ section button.link {
   outline: 3px solid var(--amber);
   outline-offset: 2px;
 }
+
+/* Crisis Do tab */
+.crisis-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.crisis .crisis-chip,
+.crisis .crisis-button {
+  min-height: var(--target-min);
+  padding: 0.5rem 1rem;
+  font: inherit;
+  color: #fff;
+  background: #000;
+  border: 2px solid #fff;
+  border-radius: 6px;
+}
+.crisis .crisis-chip[aria-pressed='true'] {
+  background: var(--amber);
+  color: #000;
+  border-color: var(--amber);
+  font-weight: 700;
+}
+.crisis-contact {
+  border: 2px solid var(--amber);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+.crisis-contact h2,
+.crisis-contact p {
+  margin: 0;
+}
+.crisis .crisis-tel {
+  display: inline-block;
+  min-height: var(--target-min);
+  color: var(--amber);
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+}
+.crisis-playbook-title {
+  margin: 0;
+}
+.crisis-progress {
+  margin: 0 0 0.5rem;
+  font-family: var(--mono);
+}
+.crisis-steps {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+.crisis-step {
+  border-bottom: 1px solid #fff;
+}
+.crisis-step-label {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  min-height: var(--target-min);
+  padding: 0.75rem 0;
+}
+.crisis-step-label input {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  accent-color: var(--amber);
+}
+.crisis-step-text {
+  display: flex;
+  flex-direction: column;
+}
+.crisis-note {
+  font-size: 1rem;
+  color: var(--amber);
+}
+.crisis-step-label input:checked + .crisis-step-text > :first-child {
+  text-decoration: line-through;
+}
+.crisis-timers {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  border: 1px solid #fff;
+  border-radius: 6px;
+}
+.crisis-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

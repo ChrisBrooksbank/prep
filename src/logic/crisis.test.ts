@@ -4,6 +4,12 @@ import {
   activePlaybookStart,
   elapsedBannerText,
   elapsedMs,
+  readCrisisProgress,
+  resetPlaybook,
+  startPlaybook,
+  tickedCount,
+  toggleTick,
+  withCrisisProgress,
   formatElapsed,
   timerStatus,
   timerStatuses,
@@ -95,5 +101,36 @@ describe('crisis shell helpers', () => {
   it('words the banner elapsed time', () => {
     expect(elapsedBannerText(null, 5000)).toBe('No playbook started');
     expect(elapsedBannerText(0 + 1, 1 + 65 * 60_000)).toBe('Elapsed 1h 05m');
+  });
+});
+
+describe('crisis progress', () => {
+  const empty = readCrisisProgress({});
+
+  it('reads malformed progress as empty', () => {
+    expect(readCrisisProgress({ crisis: 5 })).toEqual(empty);
+    expect(readCrisisProgress({ crisis: { starts: { a: -1, b: 'x' }, ticks: { c: 1 } } })).toEqual(
+      empty,
+    );
+  });
+
+  it('toggles ticks on and off', () => {
+    const on = toggleTick(empty, 'power-cut', 'torches');
+    expect(on.ticks['power-cut:torches']).toBe(true);
+    expect(tickedCount(on, 'power-cut', power.steps)).toBe(1);
+    expect(toggleTick(on, 'power-cut', 'torches').ticks).toEqual({});
+  });
+
+  it('resets only the chosen playbook', () => {
+    let c = toggleTick(empty, 'power-cut', 'torches');
+    c = toggleTick(c, 'storm', 'stay-in');
+    c = startPlaybook(startPlaybook(c, 'power-cut', 1000), 'storm', 2000);
+    const r = resetPlaybook(c, 'power-cut');
+    expect(r.ticks).toEqual({ 'storm:stay-in': true });
+    expect(r.starts).toEqual({ storm: 2000 });
+  });
+
+  it('keeps other progress keys', () => {
+    expect(withCrisisProgress({ tasks: 1 }, empty)).toEqual({ tasks: 1, crisis: empty });
   });
 });

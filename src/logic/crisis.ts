@@ -110,3 +110,79 @@ export function elapsedBannerText(startedAt: number | null, now: number): string
     ? 'No playbook started'
     : `Elapsed ${formatElapsed(elapsedMs(startedAt, now))}`;
 }
+
+/** Crisis progress as stored under `progress.crisis`. */
+export interface CrisisProgress {
+  /** Playbook id to start time (epoch ms). */
+  starts: Record<string, number>;
+  /** `playbookId:stepId` to true for ticked steps. */
+  ticks: Record<string, true>;
+}
+
+export function tickKey(playbookId: string, stepId: string): string {
+  return `${playbookId}:${stepId}`;
+}
+
+/** Reads `progress.crisis` defensively; anything malformed is dropped. */
+export function readCrisisProgress(progress: Record<string, unknown>): CrisisProgress {
+  const out: CrisisProgress = { starts: {}, ticks: {} };
+  const crisis = progress.crisis;
+  if (typeof crisis !== 'object' || crisis === null) return out;
+  const { starts, ticks } = crisis as Record<string, unknown>;
+  if (typeof starts === 'object' && starts !== null) {
+    for (const [k, v] of Object.entries(starts)) {
+      if (typeof v === 'number' && Number.isFinite(v) && v > 0) out.starts[k] = v;
+    }
+  }
+  if (typeof ticks === 'object' && ticks !== null) {
+    for (const [k, v] of Object.entries(ticks)) if (v === true) out.ticks[k] = true;
+  }
+  return out;
+}
+
+/** Returns a new progress object with the crisis part replaced; other keys are kept. */
+export function withCrisisProgress(
+  progress: Record<string, unknown>,
+  crisis: CrisisProgress,
+): Record<string, unknown> {
+  return { ...progress, crisis };
+}
+
+export function toggleTick(
+  crisis: CrisisProgress,
+  playbookId: string,
+  stepId: string,
+): CrisisProgress {
+  const key = tickKey(playbookId, stepId);
+  const ticks = { ...crisis.ticks };
+  if (ticks[key]) delete ticks[key];
+  else ticks[key] = true;
+  return { ...crisis, ticks };
+}
+
+export function startPlaybook(
+  crisis: CrisisProgress,
+  playbookId: string,
+  now: number,
+): CrisisProgress {
+  return { ...crisis, starts: { ...crisis.starts, [playbookId]: now } };
+}
+
+/** Clears ticks and the start time for one playbook only. */
+export function resetPlaybook(crisis: CrisisProgress, playbookId: string): CrisisProgress {
+  const prefix = `${playbookId}:`;
+  const starts = { ...crisis.starts };
+  delete starts[playbookId];
+  const ticks: Record<string, true> = {};
+  for (const k of Object.keys(crisis.ticks)) if (!k.startsWith(prefix)) ticks[k] = true;
+  return { starts, ticks };
+}
+
+/** Number of visible steps ticked. */
+export function tickedCount(
+  crisis: CrisisProgress,
+  playbookId: string,
+  steps: readonly { id: string }[],
+): number {
+  return steps.filter((s) => crisis.ticks[tickKey(playbookId, s.id)]).length;
+}

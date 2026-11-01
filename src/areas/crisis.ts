@@ -7,6 +7,7 @@ import {
 } from '../logic/crisis';
 import { householdLine, normaliseProfile } from '../logic/profile';
 import { getStore } from '../storage/instance';
+import { renderDoPanel } from './crisis-do';
 
 const CLOCK_REFRESH_MS = 30_000;
 
@@ -35,7 +36,7 @@ function placeholderPanel(tab: CrisisTab): HTMLElement {
 export async function renderCrisis(): Promise<HTMLElement> {
   const data = await (await getStore()).load();
   const profile = normaliseProfile(data.profile);
-  const startedAt = activePlaybookStart(data.progress);
+  let startedAt = activePlaybookStart(data.progress);
 
   const root = el('section', 'crisis');
   root.setAttribute('aria-labelledby', 'area-title');
@@ -55,13 +56,17 @@ export async function renderCrisis(): Promise<HTMLElement> {
   tabs.setAttribute('aria-label', 'Crisis mode');
 
   const buttons = new Map<CrisisTab, HTMLButtonElement>();
+  const doPanel = await renderDoPanel(profile, (next) => {
+    startedAt = next;
+    elapsed.textContent = elapsedBannerText(startedAt, Date.now());
+  });
   const select = (tab: CrisisTab): void => {
     for (const [name, b] of buttons) {
       const on = name === tab;
       b.setAttribute('aria-selected', String(on));
       b.tabIndex = on ? 0 : -1;
     }
-    panelHost.replaceChildren(placeholderPanel(tab));
+    panelHost.replaceChildren(tab === 'do' ? doPanel : placeholderPanel(tab));
     root.dataset.tab = tab;
   };
   for (const tab of CRISIS_TABS) {
