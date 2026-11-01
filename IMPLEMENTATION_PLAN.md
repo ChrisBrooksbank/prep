@@ -3,7 +3,7 @@
 ## Status
 
 - Planning iterations: 3 (re-verified: codebase still empty, plan still matches all four specs; no changes needed)
-- Build iterations: 18
+- Build iterations: 19
 - Last updated: 2026-11-01
 
 Codebase is empty (no package.json, no src). Everything below is unimplemented. One task = one build iteration.
@@ -34,7 +34,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 ### 3. Crisis mode (core value)
 - [x] Crisis data files: playbooks (5), know topics (7, seeded from prototype `topics`, `needsReview: true`), call numbers, each with source/lastChecked (spec: crisis-mode.md)
 - [x] Pure logic: profile-conditioned step filtering and playbook timers (fridge ~4h, full freezer ~48h, half ~24h) with unit tests (spec: crisis-mode.md)
-- [ ] Crisis shell: black/white/amber AAA styling, 48px targets, banner (Crisis mode, 3D off, elapsed time), household line, bottom tabs Do/Know/Call, no animation (spec: crisis-mode.md)
+- [x] Crisis shell: black/white/amber AAA styling, 48px targets, banner (Crisis mode, 3D off, elapsed time), household line, bottom tabs Do/Know/Call, no animation (spec: crisis-mode.md)
 - [ ] Do tab: playbook chips, primary contact card, ordered tickable steps with sub-notes, persisted ticks, reset playbook, playbook start time, timer status lines (spec: crisis-mode.md)
 - [ ] Power cut playbook content complete with all required steps and gas-hob condition (spec: crisis-mode.md)
 - [ ] Know tab: single-open accordion, distinct danger lines, source + lastChecked per topic, First aid links to Prepare task "Book a first aid course" (spec: crisis-mode.md)

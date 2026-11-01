@@ -247,3 +247,74 @@ section button.link {
   border-radius: 6px;
   cursor: pointer;
 }
+
+/* Crisis mode: black, white, amber. No animation, no transitions. */
+.crisis {
+  --text: #fff;
+  --amber: #ffc83d;
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+  padding: 0 0 calc(var(--target-min) + 1.5rem);
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+.crisis * {
+  animation: none !important;
+  transition: none !important;
+}
+.crisis-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--amber);
+}
+.crisis-banner h1 {
+  color: var(--amber);
+  font-size: 2rem;
+  margin-right: auto;
+}
+.crisis-flag,
+.crisis-elapsed {
+  font-family: var(--mono);
+  font-size: 1rem;
+}
+.crisis-household {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #fff;
+}
+.crisis-panel-host {
+  padding: 1rem;
+}
+.crisis-tabs {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: #000;
+  border-top: 2px solid var(--amber);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.crisis .crisis-tab {
+  min-height: 64px;
+  font-family: var(--display);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  color: #fff;
+  background: #000;
+  border: 0;
+  border-inline: 1px solid #fff;
+}
+.crisis .crisis-tab[aria-selected='true'] {
+  background: var(--amber);
+  color: #000;
+  font-weight: 700;
+}
+.crisis :focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 2px;
+}

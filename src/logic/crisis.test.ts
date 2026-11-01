@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { playbooks } from '../data/crisis-playbooks';
-import { elapsedMs, formatElapsed, timerStatus, timerStatuses, visibleSteps } from './crisis';
+import {
+  activePlaybookStart,
+  elapsedBannerText,
+  elapsedMs,
+  formatElapsed,
+  timerStatus,
+  timerStatuses,
+  visibleSteps,
+} from './crisis';
 import { defaultProfile } from './profile';
 
 const power = playbooks.find((p) => p.id === 'power-cut')!;
@@ -72,5 +80,20 @@ describe('timers', () => {
       ['freezer-half', true],
     ]);
     expect(timerStatuses(undefined, 0, 0)).toEqual([]);
+  });
+});
+
+describe('crisis shell helpers', () => {
+  it('reads the most recent playbook start', () => {
+    expect(activePlaybookStart({})).toBeNull();
+    expect(activePlaybookStart({ crisis: { starts: {} } })).toBeNull();
+    expect(activePlaybookStart({ crisis: { starts: { a: 100, b: 300, c: 'x', d: -1 } } })).toBe(
+      300,
+    );
+  });
+
+  it('words the banner elapsed time', () => {
+    expect(elapsedBannerText(null, 5000)).toBe('No playbook started');
+    expect(elapsedBannerText(0 + 1, 1 + 65 * 60_000)).toBe('Elapsed 1h 05m');
   });
 });

@@ -76,3 +76,37 @@ export function timerStatuses(
 ): TimerStatus[] {
   return (timers ?? []).map((t) => timerStatus(t, startedAt, now));
 }
+
+export const CRISIS_TABS = ['do', 'know', 'call'] as const;
+export type CrisisTab = (typeof CRISIS_TABS)[number];
+
+export const CRISIS_TAB_LABELS: Record<CrisisTab, string> = {
+  do: 'Do',
+  know: 'Know',
+  call: 'Call',
+};
+
+/**
+ * Start time of the active playbook, read from `progress.crisis.starts`
+ * (playbook id to epoch ms). The most recent valid start wins; null if none.
+ */
+export function activePlaybookStart(progress: Record<string, unknown>): number | null {
+  const crisis = progress.crisis;
+  if (typeof crisis !== 'object' || crisis === null) return null;
+  const starts = (crisis as Record<string, unknown>).starts;
+  if (typeof starts !== 'object' || starts === null) return null;
+  let latest: number | null = null;
+  for (const value of Object.values(starts)) {
+    if (typeof value === 'number' && Number.isFinite(value) && value > 0) {
+      if (latest === null || value > latest) latest = value;
+    }
+  }
+  return latest;
+}
+
+/** Elapsed-time text for the banner, e.g. "Elapsed 3h 05m", or a prompt when no playbook is started. */
+export function elapsedBannerText(startedAt: number | null, now: number): string {
+  return startedAt === null
+    ? 'No playbook started'
+    : `Elapsed ${formatElapsed(elapsedMs(startedAt, now))}`;
+}
