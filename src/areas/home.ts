@@ -18,6 +18,7 @@ import {
 import { defaultProfile, normaliseProfile } from '../logic/profile';
 import { getStore } from '../storage/instance';
 import { renderPantry } from './pantry';
+import type { HouseScene } from '../ui/home-scene';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -66,6 +67,37 @@ export async function renderHome(): Promise<HTMLElement> {
     switcher.append(b);
   }
   root.append(title, switcher, roomsView, pantryView);
+
+  // The 3D scene is a lazy chunk. Any failure leaves the 2D view as the whole experience.
+  let scene: HouseScene | null = null;
+  const stage = el('div', 'home-scene');
+  const sceneRooms = (
+    owned: ReadonlySet<string>,
+  ): { id: string; name: string; percent: number }[] =>
+    allRoomScores(homeRooms, owned, profile).map((s) => ({
+      id: s.roomId,
+      name: homeRooms.find((r) => r.id === s.roomId)?.name ?? s.roomId,
+      percent: s.percent,
+    }));
+  const startScene = async (): Promise<void> => {
+    try {
+      const { createHouseScene } = await import('../ui/home-scene');
+      scene = createHouseScene({
+        container: stage,
+        rooms: sceneRooms(new Set(progress.owned)),
+        selectedId,
+        reduceMotion:
+          document.documentElement.dataset.reduceMotion === 'true' ||
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        onSelect: (id) => {
+          selectedId = id;
+          draw();
+        },
+      });
+    } catch {
+      scene = null;
+    }
+  };
 
   const persist = async (next: HomeProgress): Promise<void> => {
     progress = next;
@@ -164,11 +196,13 @@ export async function renderHome(): Promise<HTMLElement> {
     const parts: HTMLElement[] = [summary, list];
     const selected = homeRooms.find((r) => r.id === selectedId);
     if (selected) parts.push(sheet(selected, owned));
-    roomsView.replaceChildren(...parts);
+    roomsView.replaceChildren(stage, ...parts);
+    scene?.update(sceneRooms(owned), selectedId);
     if (focusSelector) roomsView.querySelector<HTMLElement>(focusSelector)?.focus();
   }
 
   draw();
   showView('rooms');
+  void startScene();
   return root;
 }

@@ -55,7 +55,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Room item data and pantry category data (`needsReview` on BBK figures), marked as example until user edits (spec: home-model-pantry.md)
 - [x] 2D Home view: room list/bars, bottom sheet with tickable items, persisted ownership; this is also the fallback view (spec: home-model-pantry.md)
 - [x] 2D Pantry view: household selector, cover ring/bars with 3/7/10 ticks and tier chips, add/reset buttons, persisted stock (spec: home-model-pantry.md)
-- [ ] three.js house scene (lazy chunk): cutaway, rooms coloured by readiness, HTML labels, drag-to-rotate, raycast tap with drag threshold, pulse (spec: home-model-pantry.md)
+- [x] three.js house scene (lazy chunk): cutaway, rooms coloured by readiness, HTML labels, drag-to-rotate, raycast tap with drag threshold, pulse (spec: home-model-pantry.md)
 - [ ] three.js pantry shelf: instanced meshes per category, weakest glows (spec: home-model-pantry.md)
 - [ ] Render controls: IntersectionObserver + visibilitychange pause, pixel ratio cap 2, reduced-motion static render, battery saver toggle, WebGL-unavailable and Crisis-mode fallback to 2D (spec: home-model-pantry.md)
 - [ ] Smoke tests: canvas non-blank pixel check, tap room changes sheet title, tick changes percentage, 2D fallback matches numbers, Home chunk loads only when opened (spec: home-model-pantry.md)
