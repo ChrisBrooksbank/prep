@@ -589,3 +589,79 @@ section button.home-room {
   width: 1.5rem;
   height: 1.5rem;
 }
+
+/* Home switch and Pantry (2D view) */
+.home-switch,
+.pantry-people,
+.pantry-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+.home-switch button[aria-pressed='true'],
+.pantry-people button[aria-pressed='true'] {
+  background: var(--panel2);
+  border-color: var(--amber);
+}
+.pantry-figure {
+  position: relative;
+  width: 10rem;
+  height: 10rem;
+}
+.pantry-ring {
+  width: 100%;
+  height: 100%;
+}
+.pantry-ring-bg,
+.pantry-ring-fill {
+  fill: none;
+  stroke-width: 10;
+}
+.pantry-ring-bg {
+  stroke: var(--line);
+}
+.pantry-ring-fill {
+  stroke: var(--amber);
+}
+.pantry-ring-tick {
+  stroke: var(--text);
+  stroke-width: 2;
+}
+.pantry-days {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.pantry-chips {
+  list-style: none;
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0;
+}
+.pantry-chip {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.pantry-chip.reached {
+  border-color: var(--amber);
+  background: var(--panel2);
+}
+.pantry-row {
+  padding: 0.5rem 0;
+}
+.pantry-row.weakest {
+  border-left: 4px solid var(--amber);
+  padding-left: 0.5rem;
+}
+.pantry-row-head {
+  display: flex;
+  justify-content: space-between;
+}
+.pantry-row progress {
+  width: 100%;
+  accent-color: var(--amber);
+}

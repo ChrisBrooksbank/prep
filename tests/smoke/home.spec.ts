@@ -18,3 +18,24 @@ test('home 2D view: selecting a room changes the sheet, ticking changes the scor
   await page.reload();
   await expect(page.locator('[data-home-score]')).toHaveText(after ?? '');
 });
+
+test('pantry 2D view: example label, add stock changes cover, persists, reset', async ({
+  page,
+}) => {
+  await openSkippingOnboarding(page, '#home');
+  await page.getByRole('button', { name: 'Pantry' }).click();
+  await expect(page.locator('.pantry-example')).toBeVisible();
+  const days = page.locator('[data-pantry-days]');
+  const before = await days.textContent();
+  await page.locator('[data-people="1"]').click();
+  await expect(days).not.toHaveText(before ?? '');
+  await page.locator('[data-add="fats:2"]').click();
+  await expect(page.locator('.pantry-example')).toHaveCount(0);
+  const after = await days.textContent();
+  await page.reload();
+  await page.getByRole('button', { name: 'Pantry' }).click();
+  await expect(page.locator('[data-pantry-days]')).toHaveText(after ?? '');
+  await page.locator('[data-pantry-reset]').click();
+  await expect(page.locator('[data-pantry-days]')).toHaveText('0');
+  await expect(page.locator('[data-tier="3"]')).not.toHaveClass(/reached/);
+});

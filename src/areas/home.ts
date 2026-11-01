@@ -17,6 +17,7 @@ import {
 } from '../logic/home-progress';
 import { defaultProfile, normaliseProfile } from '../logic/profile';
 import { getStore } from '../storage/instance';
+import { renderPantry } from './pantry';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -39,6 +40,32 @@ export async function renderHome(): Promise<HTMLElement> {
 
   const root = el('section');
   root.setAttribute('aria-labelledby', 'area-title');
+  const title = el('h1', '', 'Home');
+  title.id = 'area-title';
+  const roomsView = el('div', 'home-view');
+  const pantryView = renderPantry(store, data.progress, profile);
+  pantryView.hidden = true;
+  const switcher = el('div', 'home-switch');
+  switcher.setAttribute('role', 'group');
+  switcher.setAttribute('aria-label', 'Home view');
+  const showView = (view: 'rooms' | 'pantry'): void => {
+    roomsView.hidden = view !== 'rooms';
+    pantryView.hidden = view !== 'pantry';
+    for (const b of switcher.querySelectorAll('button')) {
+      b.setAttribute('aria-pressed', String(b.dataset.view === view));
+    }
+  };
+  for (const [view, label] of [
+    ['rooms', 'Rooms'],
+    ['pantry', 'Pantry'],
+  ] as const) {
+    const b = el('button', '', label);
+    b.type = 'button';
+    b.dataset.view = view;
+    b.addEventListener('click', () => showView(view));
+    switcher.append(b);
+  }
+  root.append(title, switcher, roomsView, pantryView);
 
   const persist = async (next: HomeProgress): Promise<void> => {
     progress = next;
@@ -86,9 +113,6 @@ export async function renderHome(): Promise<HTMLElement> {
   function draw(focusSelector?: string): void {
     const owned = new Set(progress.owned);
     const scores = allRoomScores(homeRooms, owned, profile);
-    const title = el('h1', '', 'Home');
-    title.id = 'area-title';
-
     const summary = el('div', 'prepare-block home-summary');
     const totalEl = el('p', 'home-total', `${homeScore(scores)}%`);
     totalEl.dataset.homeScore = '';
@@ -137,13 +161,14 @@ export async function renderHome(): Promise<HTMLElement> {
       list.append(li);
     }
 
-    const parts: HTMLElement[] = [title, summary, list];
+    const parts: HTMLElement[] = [summary, list];
     const selected = homeRooms.find((r) => r.id === selectedId);
     if (selected) parts.push(sheet(selected, owned));
-    root.replaceChildren(...parts);
-    if (focusSelector) root.querySelector<HTMLElement>(focusSelector)?.focus();
+    roomsView.replaceChildren(...parts);
+    if (focusSelector) roomsView.querySelector<HTMLElement>(focusSelector)?.focus();
   }
 
   draw();
+  showView('rooms');
   return root;
 }
