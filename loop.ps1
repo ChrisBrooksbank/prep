@@ -1,0 +1,84 @@
+# Ralph Wiggum Loop (PowerShell) - Fresh context per iteration
+# Usage: .\loop.ps1 [plan|build] [max_iterations]
+#
+# Examples:
+#   .\loop.ps1 plan      # Planning mode, unlimited
+#   .\loop.ps1 plan 5    # Planning mode, max 5 iterations
+#   .\loop.ps1 build     # Build mode, unlimited
+#   .\loop.ps1 build 20  # Build mode, max 20 iterations
+
+param(
+    [ValidateSet('plan', 'build')]
+    [string]$Mode = 'build',
+
+    [ValidateRange(0, 100000)]
+    [int]$MaxIterations = 0
+)
+
+$ErrorActionPreference = 'Stop'
+Set-Location -LiteralPath $PSScriptRoot
+
+# Send the prompt to claude as UTF-8 (matters on Windows PowerShell 5.1)
+$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+
+$PromptFile = if ($Mode -eq 'plan') { 'PROMPT_plan.md' } else { 'PROMPT_build.md' }
+
+if (-not (Test-Path -LiteralPath $PromptFile)) {
+    Write-Error "$PromptFile not found"
+    exit 1
+}
+
+Write-Host '=========================================='
+Write-Host 'Ralph Wiggum Loop'
+Write-Host "Mode: $Mode"
+Write-Host "Prompt: $PromptFile"
+if ($MaxIterations -gt 0) { Write-Host "Max iterations: $MaxIterations" }
+Write-Host '=========================================='
+
+$Iteration = 0
+
+while ($true) {
+    if ($MaxIterations -gt 0 -and $Iteration -ge $MaxIterations) {
+        Write-Host ''
+        Write-Host "Reached max iterations ($MaxIterations). Stopping."
+        break
+    }
+
+    $Iteration++
+    Write-Host ''
+    Write-Host '=========================================='
+    Write-Host "Iteration $Iteration (Mode: $Mode)"
+    Write-Host (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+    Write-Host '=========================================='
+
+    # Fresh Claude session each iteration - context resets!
+    Get-Content -LiteralPath $PromptFile -Raw |
+        claude -p --dangerously-skip-permissions --model sonnet
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "claude exited with code $LASTEXITCODE. Stopping."
+        exit $LASTEXITCODE
+    }
+
+    # Auto-commit progress after each iteration
+    git add -A
+    git diff --staged --quiet
+    if ($LASTEXITCODE -ne 0) {
+        git commit -m "Ralph iteration $Iteration ($Mode mode)" -m 'Co-Authored-By: Claude <noreply@anthropic.com>'
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error 'git commit failed. Stopping.'
+            exit $LASTEXITCODE
+        }
+        Write-Host 'Changes committed.'
+    }
+    else {
+        Write-Host 'No changes to commit.'
+    }
+
+    Write-Host "Iteration $Iteration complete."
+    Start-Sleep -Seconds 2
+}
+
+Write-Host ''
+Write-Host "Ralph loop finished after $Iteration iterations."
