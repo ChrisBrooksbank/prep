@@ -1,3 +1,4 @@
+import { readingGroups, readingLinks } from '../data/reading';
 import { prepareTasks, pricesCheckedOn, type PrepareTask } from '../data/tasks';
 import { tiers } from '../data/tiers';
 import {
@@ -15,6 +16,7 @@ import {
   type PrepareProgress,
 } from '../logic/prepare';
 import { defaultProfile, normaliseProfile } from '../logic/profile';
+import { groupReading } from '../logic/reading';
 import { getStore } from '../storage/instance';
 
 function el<K extends keyof HTMLElementTagNameMap>(
@@ -123,6 +125,33 @@ export async function renderPrepare(): Promise<HTMLElement> {
     ladder.append(rungs);
     parts.push(ladder);
     parts.push(el('p', 'hint', `Prices are rough UK ranges, checked ${pricesCheckedOn}.`));
+
+    // Read
+    const read = el('div', 'prepare-block');
+    read.id = 'read';
+    read.append(
+      el('h2', '', 'Bedtime reading'),
+      el(
+        'p',
+        'hint',
+        'This list is saved on your device, but the pages themselves need a connection.',
+      ),
+    );
+    for (const section of groupReading(readingLinks, readingGroups)) {
+      read.append(el('h3', '', section.group));
+      const list = el('ul', 'reading-list');
+      for (const l of section.links) {
+        const li = el('li');
+        const a = el('a', '', l.title);
+        a.href = l.url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        li.append(a, el('span', 'hint', l.blurb));
+        list.append(li);
+      }
+      read.append(list);
+    }
+    parts.push(read);
 
     root.replaceChildren(...parts);
     if (focusSelector) root.querySelector<HTMLElement>(focusSelector)?.focus();

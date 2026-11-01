@@ -1,6 +1,7 @@
 import { callCards } from './crisis-calls';
 import { playbooks } from './crisis-playbooks';
 import { knowTopics } from './crisis-topics';
+import { readingLinks } from './reading';
 import type { Dataset } from './sourced';
 import { prepareTasks } from './tasks';
 import { tiers } from './tiers';
@@ -12,4 +13,5 @@ export const datasets: readonly Dataset[] = [
   { name: 'crisis-calls', items: callCards },
   { name: 'tiers', items: tiers.map((t) => ({ ...t, id: `tier-${t.tier}` })) },
   { name: 'prepare-tasks', items: prepareTasks },
+  { name: 'reading', items: readingLinks },
 ];
