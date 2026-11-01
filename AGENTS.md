@@ -47,3 +47,4 @@ If `package.json` does not exist yet, the first plan task is the scaffold that c
 
 - Palette and type follow the prototype: ink navy background, signage amber, Barlow Condensed / IBM Plex Sans / IBM Plex Mono.
 - [Add learnings from iterations here]
+- TypeScript is pinned to ~6.0 because typescript-eslint does not yet support TS 7 (peer <6.1). Do not bump until it does.

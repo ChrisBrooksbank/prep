@@ -1,0 +1,11 @@
+dist
+coverage
+test-results
+playwright-report
+node_modules
+package-lock.json
+specs
+PROMPT_*.md
+IMPLEMENTATION_PLAN.md
+AGENTS.md
+loop.*
