@@ -3,7 +3,7 @@
 ## Status
 
 - Planning iterations: 3 (re-verified: codebase still empty, plan still matches all four specs; no changes needed)
-- Build iterations: 4
+- Build iterations: 11
 - Last updated: 2026-11-01
 
 Codebase is empty (no package.json, no src). Everything below is unimplemented. One task = one build iteration.
@@ -23,7 +23,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Hash router with three areas (Crisis, Prepare, Home), `#crisis` deep link, top-level nav, persistent "Crisis mode" control in Prepare/Home; Home area is a lazy `import()` stub (spec: pwa-shell-offline.md, crisis-mode.md)
 - [x] Typed storage module (IndexedDB with localStorage fallback), versioned schema + migrations, unit tests incl. migration (spec: pwa-shell-offline.md)
 - [x] Profile model + pure helpers (e.g. `hasGasHob`, `gasBoiler`, household line summary) with unit tests (spec: pwa-shell-offline.md)
-- [ ] Onboarding: under ten questions, one per screen, skippable, editable later (spec: pwa-shell-offline.md)
+- [x] Onboarding: under ten questions, one per screen, skippable, editable later (spec: pwa-shell-offline.md)
 - [ ] Export / import JSON with schema validation; malformed file shows clear error and changes nothing; unit tests (spec: pwa-shell-offline.md)
 - [ ] Settings screen: export, import, delete all data (returns to onboarding), theme, reduce motion, advice data "last updated" (spec: pwa-shell-offline.md)
 - [ ] Web manifest + maskable icons + vite-plugin-pwa service worker precaching shell and data; update-ready prompt that never reloads mid-use or in crisis mode (spec: pwa-shell-offline.md)

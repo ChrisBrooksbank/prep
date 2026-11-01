@@ -18,3 +18,9 @@ export function parseRoute(hash: string): Area {
 export function routeHash(area: Area): string {
   return `#${area}`;
 }
+
+export const ONBOARDING_HASH = '#onboarding';
+
+export function isOnboardingRoute(hash: string): boolean {
+  return hash.replace(/^#\/?/, '').toLowerCase() === 'onboarding';
+}

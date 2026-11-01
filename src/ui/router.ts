@@ -1,4 +1,16 @@
-import { AREAS, AREA_LABELS, parseRoute, routeHash, type Area } from '../logic/route';
+import {
+  AREAS,
+  AREA_LABELS,
+  ONBOARDING_HASH,
+  isOnboardingRoute,
+  parseRoute,
+  routeHash,
+  type Area,
+} from '../logic/route';
+import { needsOnboarding } from '../logic/onboarding';
+import { normaliseProfile } from '../logic/profile';
+import { renderOnboarding } from '../areas/onboarding';
+import { getStore } from '../storage/instance';
 import { renderCrisis } from '../areas/crisis';
 import { renderPrepare } from '../areas/prepare';
 
@@ -30,21 +42,58 @@ function buildCrisisControl(): HTMLElement {
   return a;
 }
 
+function buildHouseholdLink(): HTMLElement {
+  const a = document.createElement('a');
+  a.href = ONBOARDING_HASH;
+  a.textContent = 'Household';
+  return a;
+}
+
+async function renderOnboardingScreen(): Promise<HTMLElement> {
+  const store = await getStore();
+  const data = await store.load();
+  return renderOnboarding(normaliseProfile(data.profile), (profile) => {
+    void store
+      .update((d) => ({
+        ...d,
+        profile: profile ? { ...profile } : d.profile,
+        settings: { ...d.settings, onboarded: true },
+      }))
+      .then(() => {
+        location.hash = routeHash('prepare');
+      });
+  });
+}
+
+/** True when a first-run visitor should be sent to onboarding. Crisis is never gated. */
+async function firstRunRedirect(area: Area): Promise<boolean> {
+  if (area === 'crisis') return false;
+  const data = await (await getStore()).load();
+  return needsOnboarding(data.settings);
+}
+
 export function startRouter(root: HTMLElement): void {
   let token = 0;
   const show = async (): Promise<void> => {
+    const onboarding = isOnboardingRoute(location.hash);
     const area = parseRoute(location.hash);
     const mine = ++token;
-    const main = await renderArea(area);
+    if (!onboarding && (await firstRunRedirect(area))) {
+      if (mine === token) location.replace(ONBOARDING_HASH);
+      return;
+    }
+    const main = onboarding ? await renderOnboardingScreen() : await renderArea(area);
     if (mine !== token) return;
-    root.dataset.area = area;
+    root.dataset.area = onboarding ? 'onboarding' : area;
     const header = document.createElement('header');
     const brand = document.createElement('span');
     brand.className = 'brand';
     brand.textContent = 'Ready';
     header.append(brand);
     // Crisis mode is its own full-screen state: no area nav, no way to wander off by accident.
-    if (area !== 'crisis') header.append(buildNav(area), buildCrisisControl());
+    if (onboarding) header.append(buildCrisisControl());
+    else if (area !== 'crisis')
+      header.append(buildNav(area), buildHouseholdLink(), buildCrisisControl());
     main.id = 'main';
     root.replaceChildren(header, main);
   };

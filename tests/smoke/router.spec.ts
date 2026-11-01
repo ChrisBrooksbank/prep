@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { openSkippingOnboarding } from './helpers';
 
 test('opens on Prepare and navigates between the three areas', async ({ page }) => {
-  await page.goto('/');
+  await openSkippingOnboarding(page);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Prepare');
   await page.getByRole('link', { name: 'Home', exact: true }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Home');
@@ -12,7 +13,7 @@ test('opens on Prepare and navigates between the three areas', async ({ page }) 
 test('#crisis deep link opens Crisis mode and the control is present elsewhere', async ({
   page,
 }) => {
-  await page.goto('/#crisis');
+  await openSkippingOnboarding(page, '#crisis');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Crisis mode');
   await page.goto('/#home');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Home');
