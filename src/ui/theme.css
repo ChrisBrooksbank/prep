@@ -1,0 +1,93 @@
+/* Design tokens. Palette and type follow specs/reference/concept-prototype.html. */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ink: #0a111a;
+  --panel: #111b27;
+  --panel2: #172433;
+  --line: #243649;
+  --text: #e8ecef;
+  --mute: #90a1b3;
+  --amber: #f2b134;
+  --red: #ea4b3c;
+  --green: #86c698;
+  --water: #4fa8dc;
+  --bone: #d9d4c3;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --ink: #f5f3ec;
+  --panel: #ffffff;
+  --panel2: #ebe8dd;
+  --line: #c9c4b3;
+  --text: #121a24;
+  --mute: #4a5868;
+  --amber: #8a5a00;
+  --red: #a52a1e;
+  --green: #2b6b3f;
+  --water: #1c5f8c;
+  --bone: #3b3a33;
+}
+
+:root[data-theme='high-contrast'] {
+  color-scheme: dark;
+  --ink: #000000;
+  --panel: #000000;
+  --panel2: #0d0d0d;
+  --line: #ffffff;
+  --text: #ffffff;
+  --mute: #ffffff;
+  --amber: #ffc83d;
+  --red: #ff7b6e;
+  --green: #9ff0b3;
+  --water: #7fd0ff;
+  --bone: #ffffff;
+}
+
+:root {
+  --display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --body: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  --target-min: 48px;
+}
+
+html {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--body);
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0;
+  text-wrap: balance;
+  line-height: 0.95;
+}
+
+:root[data-reduce-motion='true'] *,
+:root[data-reduce-motion='true'] *::before,
+:root[data-reduce-motion='true'] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

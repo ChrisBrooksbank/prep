@@ -18,7 +18,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] `npm run check` chaining typecheck, lint, format check, test:run, build, test:smoke; add `.gitignore` entries (node_modules, dist, test-results) (spec: AGENTS.md)
 
 ### 2. PWA shell and offline
-- [ ] Design tokens (CSS variables) from prototype palette; bundle Barlow Condensed / IBM Plex Sans / IBM Plex Mono locally (woff2 via fontsource or files, no CDN); dark default, `prefers-color-scheme`, high-contrast option (spec: pwa-shell-offline.md)
+- [x] Design tokens (CSS variables) from prototype palette; bundle Barlow Condensed / IBM Plex Sans / IBM Plex Mono locally (woff2 via fontsource or files, no CDN); dark default, `prefers-color-scheme`, high-contrast option (spec: pwa-shell-offline.md)
 - [ ] Typed data-file conventions: shared `Sourced` type (`source`, `lastChecked`, `needsReview?`) and a dev-only report listing `needsReview` items (spec: pwa-shell-offline.md)
 - [ ] Hash router with three areas (Crisis, Prepare, Home), `#crisis` deep link, top-level nav, persistent "Crisis mode" control in Prepare/Home; Home area is a lazy `import()` stub (spec: pwa-shell-offline.md, crisis-mode.md)
 - [ ] Typed storage module (IndexedDB with localStorage fallback), versioned schema + migrations, unit tests incl. migration (spec: pwa-shell-offline.md)
