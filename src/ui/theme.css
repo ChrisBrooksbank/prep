@@ -91,3 +91,50 @@ h3 {
     scroll-behavior: auto !important;
   }
 }
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+header .brand {
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  margin-right: auto;
+}
+
+header nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+header a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 0 1rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+header nav a[aria-current='page'] {
+  color: var(--amber);
+  border-bottom: 2px solid var(--amber);
+}
+
+header .crisis-control {
+  background: var(--amber);
+  color: #000;
+  font-weight: 700;
+}
+
+main,
+#app > section {
+  padding: 1rem;
+}

@@ -6,7 +6,7 @@ import { logNeedsReview } from './ui/dev-report';
 applyTheme();
 logNeedsReview();
 
+import { startRouter } from './ui/router';
+
 const app = document.getElementById('app');
-if (app) {
-  app.textContent = 'Ready';
-}
+if (app) startRouter(app);
