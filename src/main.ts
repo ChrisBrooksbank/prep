@@ -6,6 +6,7 @@ import { getStore } from './storage/instance';
 import { logNeedsReview } from './ui/dev-report';
 
 import { startUpdatePrompt } from './ui/update-prompt';
+import { startBatteryHint } from './ui/battery-hint';
 
 applyTheme();
 logNeedsReview();
@@ -25,3 +26,4 @@ void getStore()
 const app = document.getElementById('app');
 if (app) startRouter(app);
 startUpdatePrompt();
+startBatteryHint();

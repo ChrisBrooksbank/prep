@@ -225,6 +225,18 @@ section button.link {
 .update-banner[hidden] {
   display: none;
 }
+.battery-banner {
+  bottom: max(96px, calc(env(safe-area-inset-bottom, 0px) + 80px));
+}
+.battery-banner-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  color: var(--amber);
+  border: 1px solid var(--amber);
+  border-radius: 6px;
+}
 .update-banner button {
   min-height: 44px;
   padding: 0 16px;
