@@ -32,7 +32,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Bundle budget check: Crisis + shell JS under 150 KB gzipped, three.js in separate chunk (spec: pwa-shell-offline.md)
 
 ### 3. Crisis mode (core value)
-- [ ] Crisis data files: playbooks (5), know topics (7, seeded from prototype `topics`, `needsReview: true`), call numbers, each with source/lastChecked (spec: crisis-mode.md)
+- [x] Crisis data files: playbooks (5), know topics (7, seeded from prototype `topics`, `needsReview: true`), call numbers, each with source/lastChecked (spec: crisis-mode.md)
 - [ ] Pure logic: profile-conditioned step filtering and playbook timers (fridge ~4h, full freezer ~48h, half ~24h) with unit tests (spec: crisis-mode.md)
 - [ ] Crisis shell: black/white/amber AAA styling, 48px targets, banner (Crisis mode, 3D off, elapsed time), household line, bottom tabs Do/Know/Call, no animation (spec: crisis-mode.md)
 - [ ] Do tab: playbook chips, primary contact card, ordered tickable steps with sub-notes, persisted ticks, reset playbook, playbook start time, timer status lines (spec: crisis-mode.md)
