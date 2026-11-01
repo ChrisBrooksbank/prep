@@ -22,7 +22,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Typed data-file conventions: shared `Sourced` type (`source`, `lastChecked`, `needsReview?`) and a dev-only report listing `needsReview` items (spec: pwa-shell-offline.md)
 - [x] Hash router with three areas (Crisis, Prepare, Home), `#crisis` deep link, top-level nav, persistent "Crisis mode" control in Prepare/Home; Home area is a lazy `import()` stub (spec: pwa-shell-offline.md, crisis-mode.md)
 - [x] Typed storage module (IndexedDB with localStorage fallback), versioned schema + migrations, unit tests incl. migration (spec: pwa-shell-offline.md)
-- [ ] Profile model + pure helpers (e.g. `hasGasHob`, `gasBoiler`, household line summary) with unit tests (spec: pwa-shell-offline.md)
+- [x] Profile model + pure helpers (e.g. `hasGasHob`, `gasBoiler`, household line summary) with unit tests (spec: pwa-shell-offline.md)
 - [ ] Onboarding: under ten questions, one per screen, skippable, editable later (spec: pwa-shell-offline.md)
 - [ ] Export / import JSON with schema validation; malformed file shows clear error and changes nothing; unit tests (spec: pwa-shell-offline.md)
 - [ ] Settings screen: export, import, delete all data (returns to onboarding), theme, reduce motion, advice data "last updated" (spec: pwa-shell-offline.md)
