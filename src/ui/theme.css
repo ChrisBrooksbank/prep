@@ -411,3 +411,59 @@ section button.link {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+/* Crisis Know tab */
+.crisis-topic-heading {
+  margin: 0;
+  border-bottom: 1px solid #fff;
+}
+.crisis .crisis-topic-button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  min-height: var(--target-min);
+  padding: 0.75rem 0;
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  background: #000;
+  border: 0;
+  text-align: left;
+}
+.crisis .crisis-topic-button::after {
+  content: '+';
+  font-family: var(--mono);
+}
+.crisis .crisis-topic-button[aria-expanded='true']::after {
+  content: '\2212';
+}
+.crisis-topic-body {
+  padding: 0.5rem 0 1rem;
+  border-bottom: 1px solid #fff;
+}
+.crisis-line {
+  margin: 0 0 0.75rem;
+}
+.crisis-danger {
+  padding: 0.5rem 0.75rem;
+  border: 3px solid var(--amber);
+  border-left-width: 10px;
+  background: #1a1200;
+}
+.crisis-danger-label {
+  color: var(--amber);
+  text-transform: uppercase;
+}
+.crisis .crisis-link {
+  display: inline-block;
+  min-height: var(--target-min);
+  padding: 0.75rem 0;
+  color: var(--amber);
+  font-weight: 700;
+}
+.crisis-source {
+  margin: 0;
+  font-size: 0.875rem;
+  font-family: var(--mono);
+}

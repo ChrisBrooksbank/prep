@@ -8,6 +8,7 @@ import {
 import { householdLine, normaliseProfile } from '../logic/profile';
 import { getStore } from '../storage/instance';
 import { renderDoPanel } from './crisis-do';
+import { renderKnowPanel } from './crisis-know';
 
 const CLOCK_REFRESH_MS = 30_000;
 
@@ -60,13 +61,16 @@ export async function renderCrisis(): Promise<HTMLElement> {
     startedAt = next;
     elapsed.textContent = elapsedBannerText(startedAt, Date.now());
   });
+  const knowPanel = renderKnowPanel();
   const select = (tab: CrisisTab): void => {
     for (const [name, b] of buttons) {
       const on = name === tab;
       b.setAttribute('aria-selected', String(on));
       b.tabIndex = on ? 0 : -1;
     }
-    panelHost.replaceChildren(tab === 'do' ? doPanel : placeholderPanel(tab));
+    panelHost.replaceChildren(
+      tab === 'do' ? doPanel : tab === 'know' ? knowPanel : placeholderPanel(tab),
+    );
     root.dataset.tab = tab;
   };
   for (const tab of CRISIS_TABS) {
