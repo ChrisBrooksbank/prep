@@ -1,0 +1,482 @@
+<title>Ready Home Screen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: two live phones side by side, calm home model beside the flat crisis mode it hands over to. */
+:root{
+  color-scheme: dark;
+  --ink:#0a111a; --panel:#111b27; --panel2:#172433; --line:#243649;
+  --text:#e8ecef; --mute:#90a1b3; --amber:#f2b134; --red:#ea4b3c; --green:#86c698; --water:#4fa8dc; --bone:#d9d4c3;
+  --display:'Barlow Condensed','Arial Narrow',sans-serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--ink);color:var(--text);font:400 16px/1.55 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin:0;text-wrap:balance;line-height:.95}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+a{color:var(--amber)}
+.hero{padding:48px 0 28px;display:grid;gap:18px;max-width:70ch}
+.hero h1{font-size:clamp(48px,9vw,96px);color:var(--bone)}
+.hero p{color:var(--mute);font-size:18px;margin:0}
+.duo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 22px;padding:20px 0 40px;justify-items:center}
+.duo>.col:nth-child(1){order:3}.duo>.col:nth-child(2){order:1}.duo>.col:nth-child(3){order:2}
+.col{display:grid;gap:16px;justify-items:center;width:100%;max-width:360px;align-content:start}
+.cap{display:grid;gap:6px;max-width:352px;width:100%;min-height:128px;align-content:start}
+.cap h2{font-size:34px;color:var(--bone)}
+.cap p{margin:0;color:var(--mute);font-size:14.5px}
+.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;border-top:1px solid var(--line);padding:32px 0 56px}
+.notes div{display:grid;gap:6px;align-content:start}
+.notes h3{font-size:26px;color:var(--bone)}
+.notes p{margin:0;color:var(--mute);font-size:14.5px}
+/* phone */
+.phone{width:min(100%,352px);height:780px;border:2px solid #2c4058;border-radius:38px;background:var(--panel);padding:10px;box-shadow:0 30px 80px -30px #000}
+.screen{height:100%;border-radius:28px;overflow:hidden;background:var(--ink);display:flex;flex-direction:column;position:relative}
+.sbar{display:flex;justify-content:space-between;padding:10px 20px 4px;font:500 11px/1 var(--mono);color:var(--mute)}
+.appbar{padding:4px 16px 8px;display:flex;justify-content:space-between;align-items:end;gap:10px}
+.appbar h3{font-size:26px;color:var(--bone)}
+.appbar .sub{font:500 11px/1.25 var(--mono);color:var(--mute);text-align:right}
+.stage{position:relative;flex:1;min-height:150px;background:#0a111a}
+.stage canvas{display:block}
+.lbl{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font:500 10.5px/1 var(--mono);padding:5px 7px;border:1px solid var(--c);background:#0a111ae6;color:#fff;white-space:nowrap;letter-spacing:.04em}
+.lbl b{color:var(--c);margin-left:5px}
+.lbl.sel{background:var(--c);color:#0a111a}
+.lbl.sel b{color:#0a111a}
+.hint{position:absolute;left:12px;bottom:8px;font:400 10.5px/1 var(--mono);color:var(--mute)}
+.strip{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 16px;border-top:1px solid var(--line);background:var(--panel)}
+.strip .big{font:700 30px/1 var(--display)}
+.strip small{font:400 11px/1.3 var(--mono);color:var(--mute);text-align:right}
+.k{font:500 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.sheet{background:var(--panel2);padding:10px 14px 8px;display:grid;gap:6px;border-top:1px solid var(--line)}
+.sheet .hd{display:flex;justify-content:space-between;align-items:baseline}
+.sheet .hd h4{margin:0;font:700 24px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.pct{font:700 22px/1 var(--display)}
+.item{appearance:none;display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;text-align:left;width:100%;border:0;background:transparent;color:var(--text);padding:4px 0;cursor:pointer;font:400 13.5px/1.2 var(--body)}
+.item .bx{width:18px;height:18px;border:2px solid var(--mute);display:grid;place-items:center}
+.item.have .bx{background:var(--green);border-color:var(--green)}
+.item.have .bx::after{content:"";width:8px;height:4px;border-left:2px solid #0a111a;border-bottom:2px solid #0a111a;transform:rotate(-45deg) translate(1px,-1px)}
+.item em{font:400 10.5px/1.2 var(--mono);font-style:normal;color:var(--mute)}
+.item.have{color:var(--mute)}
+.item .tip{display:block;font:400 10.5px/1.25 var(--mono);color:var(--amber);margin-top:2px}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.crisisbtn{appearance:none;border:0;background:var(--red);color:#fff;font:700 22px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:14px;cursor:pointer;width:100%}
+/* crisis */
+.crisis{background:#000;color:#fff}
+.crisis .sbar{color:#bbb}
+.cbody{padding:6px 14px 14px;display:grid;gap:10px;align-content:start;overflow:hidden;flex:1}
+.cbanner{border:2px solid var(--amber);padding:8px 10px;font:500 11.5px/1.35 var(--mono);color:var(--amber);display:flex;justify-content:space-between;gap:10px}
+.hh{font:500 11px/1.4 var(--mono);color:#aaa}
+.pbs{display:flex;gap:6px;flex-wrap:wrap}
+.pb{appearance:none;border:2px solid #444;background:#000;color:#fff;font:700 16px/1 var(--display);text-transform:uppercase;letter-spacing:.05em;padding:9px 11px;cursor:pointer}
+.pb[aria-pressed=true]{background:var(--amber);color:#000;border-color:var(--amber)}
+.dial{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;background:#fff;color:#000;padding:10px 14px}
+.dial b{font:700 24px/1 var(--display);text-transform:uppercase}
+.dial span{font:500 11.5px/1.2 var(--mono);color:#333;display:block;margin-top:3px}
+.dial strong{font:700 28px/1 var(--display);letter-spacing:.02em}
+.steps{border-top:2px solid #333;padding-top:8px;display:grid;gap:2px}
+.step{appearance:none;display:flex;gap:10px;align-items:flex-start;border:0;background:transparent;color:#fff;text-align:left;font:400 15px/1.3 var(--body);padding:6px 0;cursor:pointer;width:100%}
+.step::before{content:"";flex:none;width:20px;height:20px;border:2px solid #fff;margin-top:1px}
+.step.done{color:#777;text-decoration:line-through}
+.step.done::before{background:#777;border-color:#777}
+.step small{display:block;font:400 11px/1.3 var(--mono);color:var(--amber);text-decoration:none}
+.step.done small{color:#777}
+.cbody{display:flex;flex-direction:column;gap:10px;min-height:0}
+.pane{display:grid;gap:10px;align-content:start;overflow-y:auto;min-height:0;flex:1;scrollbar-width:thin}
+.pane[hidden]{display:none}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid #333;background:#000}
+.tab{appearance:none;border:0;background:#000;color:#aaa;font:700 20px/1 var(--display);text-transform:uppercase;letter-spacing:.08em;padding:14px 0 12px;cursor:pointer;border-top:4px solid transparent;margin-top:-2px}
+.tab[aria-selected=true]{color:#fff;border-top-color:var(--amber)}
+.tp{appearance:none;text-align:left;border:2px solid #444;background:#000;color:#fff;padding:10px 12px;font:700 20px/1 var(--display);text-transform:uppercase;letter-spacing:.04em;cursor:pointer;width:100%;display:flex;justify-content:space-between}
+.tp[aria-expanded=true]{border-color:var(--amber);color:var(--amber)}
+.tpb{margin:-10px 0 0;border:2px solid var(--amber);border-top:0;padding:10px 12px 12px;display:grid;gap:8px;font:400 14.5px/1.35 var(--body);list-style:none}
+.tpb li{padding-left:14px;position:relative}
+.tpb li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;background:#fff}
+.tpb li.w{color:#ff8a7a;font-weight:600}
+.tpb li.w::before{background:#ff8a7a}
+.pbody{padding:2px 14px 14px;display:grid;gap:12px;align-content:start;overflow-y:auto;flex:1;min-height:0;scrollbar-width:thin}
+.rung{display:grid;grid-template-columns:112px 1fr 34px;gap:8px;align-items:center;font:500 11px/1.2 var(--mono);color:var(--mute);padding:7px 9px;border:1px solid var(--line)}
+.rung.cur{border-color:var(--amber);color:var(--text)}
+.rung b{display:block;font:700 18px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;color:var(--bone)}
+.rb{height:8px;background:var(--panel2);position:relative}
+.rb u{position:absolute;inset:0 auto 0 0;background:var(--green)}
+.rung.cur .rb u{background:var(--amber)}
+.wk{background:var(--panel2);border:1px solid var(--line);padding:12px 14px;display:grid;gap:9px}
+.wk h4{margin:0;font:700 27px/1 var(--display);text-transform:uppercase;color:var(--bone)}
+.wk p{margin:0;font-size:13.5px;color:var(--mute)}
+.tg{display:flex;gap:6px;flex-wrap:wrap}
+.tg span{font:500 10.5px/1 var(--mono);padding:4px 7px;border:1px solid var(--line);color:var(--mute)}
+.tg span.k1{color:var(--amber);border-color:var(--amber)}
+.btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--text);font:500 12px/1 var(--mono);padding:10px 12px;cursor:pointer}
+.btn.pri{background:var(--amber);color:#1a1405;border-color:var(--amber)}
+.btnrow{display:flex;gap:6px}
+.up{display:grid;gap:2px}
+.up .item{border-bottom:1px solid var(--line);padding:7px 0}
+.reading{border-top:1px solid var(--line);padding:36px 0 32px;display:grid;gap:22px}
+.reading h2{font-size:clamp(36px,5.5vw,56px);color:var(--bone)}
+.reading>p{margin:0;color:var(--mute);max-width:64ch}
+.rgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
+.rgrid h3{font-size:24px;color:var(--amber);margin-bottom:12px}
+.rgrid ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.rgrid a{font-weight:600;color:var(--text);text-decoration-color:var(--amber);text-underline-offset:3px}
+.rgrid li span{display:block;color:var(--mute);font-size:13.5px;margin-top:2px}
+.rgrid small{display:block;color:var(--mute);font:400 11px/1.3 var(--mono);margin-top:12px}
+.rd{display:grid}
+.rd a{display:block;color:var(--text);text-decoration:none;border-bottom:1px solid var(--line);padding:8px 0;font-size:13.5px}
+.rd a::after{content:" \2197";color:var(--amber)}
+.rd a span{display:block;font:400 10.5px/1.3 var(--mono);color:var(--mute)}
+@media (max-width:760px){.rgrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1140px){.duo{grid-template-columns:repeat(2,minmax(0,1fr))}.duo>.col{max-width:420px}}
+@media (max-width:760px){.duo{grid-template-columns:minmax(0,1fr)}.notes{grid-template-columns:minmax(0,1fr)}.cap{min-height:0}}
+@media (max-width:420px){.phone{height:740px}}
+</style>
+
+<div class="wrap">
+<section class="hero">
+  <div class="eyebrow">Concept 3 · Before, during, at home</div>
+  <h1>Prepare. Cope. Know.</h1>
+  <p>Crisis mode now comes first: tick-off playbooks and a survival guide that work offline. Prepare is the ahead-of-time programme that climbs from the UK's 72 hours to the Nordic week and the German ten days. Home shows where you stand, room by room.</p>
+</section>
+
+<section class="duo">
+  <div class="col">
+    <div class="cap"><div class="eyebrow">3 · Where you stand</div><h2>Home</h2><p>Tap a room in the model, or tick items off in the panel. Scores and colours update as you go. Try ticking the radio.</p></div>
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>19:05</span><span>Online · 76%</span></div>
+      <div class="appbar"><h3>Home</h3><div class="sub">CM1 · Chelmsford<br>Terrace · gas boiler · 2 adults</div></div>
+      <div class="stage" id="homeStage"><div id="lbls"></div><div class="hint">Drag to turn · tap a room</div></div>
+      <div class="strip"><div><div class="k">Whole home</div><div class="big" id="allPct">62%</div></div><small id="allNote">Weakest room: Bathroom<br>Water for 7 days: yes</small></div>
+      <div class="sheet" id="sheet"></div>
+      <button class="crisisbtn" id="toCrisis">Crisis mode</button>
+    </div></div>
+  </div>
+
+  <div class="col">
+    <div class="cap"><div class="eyebrow">1 · During</div><h2>Crisis</h2><p>Do: tick-off steps that know your home. Know: survival information. Call: the numbers. No 3D, no network.</p></div>
+    <div class="phone"><div class="screen crisis">
+      <div class="sbar"><span>19:42</span><span>Low power · 14%</span></div>
+      <div class="cbody">
+        <div class="cbanner"><span>CRISIS MODE<br>3D off · screen dimmed</span><span id="cHour">Hour 0:37</span></div>
+        <div class="hh">Your home: terrace, gas boiler, gas hob, 2 adults, 1 on medication</div>
+        <div class="pbs" id="pbs"></div>
+        <div id="dial"></div>
+        <div class="steps" id="steps"></div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<section class="reading">
+  <div class="eyebrow">Further reading</div>
+  <h2>Bedtime reading</h2>
+  <p>The app summarises. These are the primary sources behind it, worth reading properly while the lights are on. In the real app they would sit in a Read section, with the key pages saved for offline use.</p>
+  <div class="rgrid">
+    <div><h3>UK official</h3><ul>
+      <li><a href="https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency" target="_blank" rel="noopener">GOV.UK: take small, simple steps</a><span>The Be Ready campaign announcement, with the 72 hour advice.</span></li>
+      <li><a href="https://www.gov.uk/alerts" target="_blank" rel="noopener">Emergency Alerts</a><span>How the loud phone alert works, how to check one is genuine, and how to opt out.</span></li>
+      <li><a href="https://www.gov.uk/government/publications/national-risk-register-2026" target="_blank" rel="noopener">National Risk Register 2026</a><span>The government's own list of what could go wrong and how likely it is. The <a href="https://gov.uk/government/publications/national-risk-register-2025" target="_blank" rel="noopener">2025 edition</a> is also online.</span></li>
+      <li><a href="https://www.gov.uk/government/publications/food-safety-in-a-power-cut-advice-for-consumers/food-safety-in-a-power-cut-advice-for-consumers" target="_blank" rel="noopener">Food safety in a power cut</a><span>From the Food Standards Agency. Fridge and freezer timings.</span></li>
+      <li><a href="https://ready.scot" target="_blank" rel="noopener">Ready Scotland</a><span>The Scottish Government's equivalent, with a home emergency plan builder.</span></li>
+    </ul></div>
+    <div><h3>Charities and skills</h3><ul>
+      <li><a href="https://www.redcross.org.uk/get-help/prepare-for-emergencies/prepare-an-emergency-kit" target="_blank" rel="noopener">British Red Cross: emergency kit</a><span>Build the kit one item at a time with the weekly shop, for home, going out and the car.</span></li>
+      <li><a href="https://www.sja.org.uk/first-aid-advice/" target="_blank" rel="noopener">St John Ambulance first aid advice</a><span>CPR, bleeding, the recovery position and more. Clinically checked.</span></li>
+      <li><a href="https://www.sja.org.uk/get-advice/" target="_blank" rel="noopener">St John Ambulance: get advice</a><span>Also find courses, which beat any app.</span></li>
+      <li><a href="https://api.gov.uk/ea/flood-monitoring/" target="_blank" rel="noopener">Environment Agency flood data</a><span>For builders: the open flood warning API behind any live flood banner. England only.</span></li>
+    </ul></div>
+    <div><h3>The longer standards</h3><ul>
+      <li><a href="https://www.mcf.se/en/advice-for-individuals/home-preparedness--prepping-for-at-least-a-week/basics-of-home-emergency-preparedness/" target="_blank" rel="noopener">Sweden: home preparedness for a week</a><span>From the Swedish Civil Defence and Resilience Agency.</span></li>
+      <li><a href="https://www.mcf.se/en/advice-for-individuals/the-brochure-in-case-of-crisis-or-war/download-and-order-the-brochure-in-case-of-crisis-or-war/" target="_blank" rel="noopener">Sweden: "In case of crisis or war"</a><span>The brochure itself, free to download in English. Short and very readable.</span></li>
+      <li><a href="https://www.dsb.no/en/Safe-everyday-life/Self-preparedness/Frequently-asked-questions-about-self-preparedness/" target="_blank" rel="noopener">Norway: self-preparedness FAQ</a><span>Why they moved from three days to a week.</span></li>
+      <li><a href="https://www.sikkerhverdag.no/en/being-prepared/incidents-and-crises/advice-on-self-preparedness-for-emergencies/" target="_blank" rel="noopener">Norway: advice for emergencies</a><span>Practical advice, including power and payment outages.</span></li>
+      <li><a href="https://www.bbk.bund.de" target="_blank" rel="noopener">Germany: BBK</a><span>Look for the guide "Vorsorgen für Krisen und Katastrophen" and the 10 day checklist. In German.</span></li>
+      <li><a href="https://en.wikipedia.org/wiki/In_case_of_crisis_or_war" target="_blank" rel="noopener">Wikipedia: the Swedish booklet</a><span>History of the brochure since 1943. Good background.</span></li>
+    </ul></div>
+  </div>
+  <small class="note-ill" style="font:400 11px/1.4 var(--mono);color:var(--mute)">Links were found by searching, not all opened in full. The BBK link goes to its home page because I could not confirm its guide address. Check each before release.</small>
+</section>
+
+<section class="notes">
+  <div><h3>Knowledge that works offline</h3><p>The Know tab holds short survival guides (warmth, water, food safety, cooking, first aid, radio, hygiene). Written once from NHS, FSA and St John Ambulance guidance and stored on the device.</p></div>
+  <div><h3>One thing a week</h3><p>Prepare gives one small task at a time: buy, learn, plan or practise, with a UK price or time. Finishing a step moves you up to the next target, with no guilt streaks.</p></div>
+  <div><h3>Profile makes it specific</h3><p>Ten questions at setup: home type, heating, cooking, who lives there, medication. Steps such as "light the hob with a match" only appear if you have a gas hob. Everything stays on the device.</p></div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+var T=THREE, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $=function(s,r){return (r||document).querySelector(s)};
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+
+/* ---------- data ---------- */
+var rooms=[
+  {id:'lounge',name:'Lounge',note:'Your warm room',pos:[-1.35,1.18,0],size:[3.8,2.2,5.0],items:[
+    {n:'Torch + spare batteries',have:true,w:2},
+    {n:'Power bank, 20,000 mAh',have:true,w:2},
+    {n:'Wind-up or battery radio',have:false,w:3,p:'£20',tip:'BBC local radio is your main source of news.'},
+    {n:'2 sleeping bags',have:false,w:3,p:'£50',tip:'Heat people, not the house.'},
+    {n:'Blankets and hats',have:true,w:1}]},
+  {id:'kitchen',name:'Kitchen',note:'Water, food, cooking',pos:[2.05,1.18,0],size:[2.4,2.2,5.0],items:[
+    {n:'36 L stored water',have:true,w:3},
+    {n:'Gas hob (lights with a match)',have:true,w:1},
+    {n:'Camping stove + 4 canisters',have:false,w:2,p:'£25',tip:'Use only with a window open.'},
+    {n:'Manual tin opener',have:false,w:1,p:'£4'},
+    {n:'7 days of food',have:true,w:3}]},
+  {id:'bedroom',name:'Bedroom',note:'Sleep and medication',pos:[-1.35,3.6,0],size:[3.8,2.2,5.0],items:[
+    {n:'Head torch by the bed',have:true,w:1},
+    {n:'Spare duvet',have:true,w:1},
+    {n:'Medication, 12 days left',have:true,w:3,tip:'Aim for 4 weeks, as Sweden advises.'},
+    {n:'Hot-water bottles',have:false,w:1,p:'£8'}]},
+  {id:'bath',name:'Bathroom',note:'Water, hygiene, first aid',pos:[2.05,3.6,0],size:[2.4,2.2,5.0],items:[
+    {n:'First aid kit, in date',have:true,w:2},
+    {n:'Fill the bath if warned',have:false,w:2,tip:'Flushing water for a week.'},
+    {n:'Hygiene wipes',have:false,w:1,p:'£3'},
+    {n:'Spare loo roll',have:false,w:1,p:'£4'},
+    {n:'10 L water carrier',have:false,w:1,p:'£8'}]}
+];
+rooms.forEach(function(r){r.items.forEach(function(i){i.start=i.have})});
+function score(r){var t=0,h=0;r.items.forEach(function(i){t+=i.w;if(i.have)h+=i.w});return Math.round(100*h/t)}
+function col(p){return p>=75?0x86c698:(p>=50?0xf2b134:0xea4b3c)}
+function css(p){return p>=75?'#86c698':(p>=50?'#f2b134':'#ea4b3c')}
+
+/* ---------- 3D house ---------- */
+var el=$('#homeStage');
+var r=new T.WebGLRenderer({antialias:true}); r.setPixelRatio(Math.min(devicePixelRatio||1,2)); r.setClearColor(0x0a111a,1);
+var cv=r.domElement; cv.style.cssText='display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab'; el.insertBefore(cv,el.firstChild);
+var sc=new T.Scene(), cam=new T.PerspectiveCamera(32,1,0.1,200);
+var S={yaw0:-0.32,user:0,pitch:0.22,dist:22,t:0,vis:true};
+var target=new T.Vector3(0,2.4,0);
+function lam(c){return new T.MeshLambertMaterial({color:c})}
+function box(w,h,d,c,x,y,z){var m=new T.Mesh(new T.BoxGeometry(w,h,d),lam(c));m.position.set(x,y,z);sc.add(m);return m}
+box(7.2,0.2,5.8,0x1b2735,0,-0.1,0); box(6.8,0.18,5.4,0x2a3a4d,0,2.4,0);
+box(6.9,4.9,0.16,0x3a4a5c,0,2.45,-2.7); box(0.16,4.9,5.4,0x34445a,-3.4,2.45,0); box(0.16,4.9,5.4,0x2c3a4c,3.4,2.45,0);
+box(0.12,2.3,3.4,0x34445a,0.7,1.2,-0.9); box(0.12,2.2,3.4,0x34445a,0.7,3.6,-0.9);
+var roofShape=new T.Shape(); roofShape.moveTo(-3.5,0); roofShape.lineTo(3.5,0); roofShape.lineTo(0,1.6); roofShape.lineTo(-3.5,0);
+var roof=new T.Mesh(new T.ExtrudeGeometry(roofShape,{depth:5.6,bevelEnabled:false}),new T.MeshLambertMaterial({color:0x4a5d73,transparent:true,opacity:.22}));
+roof.position.set(0,4.9,-2.8); sc.add(roof);
+var re=new T.LineSegments(new T.EdgesGeometry(roof.geometry),new T.LineBasicMaterial({color:0x6d86a3})); re.position.copy(roof.position); sc.add(re);
+[1.4,3.9].forEach(function(y){var w=new T.Mesh(new T.PlaneGeometry(1.7,1.1),new T.MeshBasicMaterial({color:0x9fc4e0}));w.position.set(-1.4,y,-2.6);sc.add(w)});
+box(2.1,0.6,0.9,0x5b6f86,-1.9,0.3,-2.1); box(1.5,0.5,0.4,0x2a3340,-1.9,0.25,1.6);
+box(0.75,1.75,0.75,0xbdd3dc,2.9,0.88,-2.15); box(0.85,0.9,0.7,0x8b95a1,1.9,0.45,-2.2); box(0.55,0.85,0.35,0xaeb6c0,1.2,1.75,-2.5);
+box(1.5,0.08,0.9,0x6a5a46,1.9,0.78,0.6);
+[[1.3,0.2],[2.5,0.2],[1.3,1.0],[2.5,1.0]].forEach(function(p){box(0.07,0.76,0.07,0x6a5a46,p[0],0.38,p[1])});
+box(2.1,0.5,1.6,0x6b86a6,-1.9,2.75,-1.6); box(1.9,0.55,0.85,0xd9dfe4,2.2,2.77,-2.1); box(1.0,1.7,0.5,0x3d4c5f,-0.5,3.3,-2.4);
+[[-1.6,2.25,0],[2.0,2.25,0],[-1.2,4.65,0],[2.0,4.65,0]].forEach(function(p){var m=new T.Mesh(new T.SphereGeometry(0.12,12,8),new T.MeshBasicMaterial({color:0xffe2a8}));m.position.set(p[0],p[1],p[2]);sc.add(m)});
+var p1=new T.PointLight(0xffd9a0,0.9,10,1.3); p1.position.set(0.2,2.0,0.6); sc.add(p1);
+var p2=new T.PointLight(0xffd9a0,0.8,10,1.3); p2.position.set(0.4,4.4,0.4); sc.add(p2);
+sc.add(new T.HemisphereLight(0xbcd2e8,0x2a2f3a,0.75));
+var dl=new T.DirectionalLight(0xfff2da,0.5); dl.position.set(-4,8,9); sc.add(dl);
+/* room zones */
+var zones={};
+rooms.forEach(function(rm){
+  var g=new T.BoxGeometry(rm.size[0],rm.size[1],rm.size[2]);
+  var m=new T.Mesh(g,new T.MeshBasicMaterial({color:0x86c698,transparent:true,opacity:.16,depthWrite:false}));
+  m.position.set(rm.pos[0],rm.pos[1],rm.pos[2]); m.userData.id=rm.id; sc.add(m);
+  var e=new T.LineSegments(new T.EdgesGeometry(g),new T.LineBasicMaterial({color:0x86c698})); e.position.copy(m.position); sc.add(e);
+  zones[rm.id]={mesh:m,edge:e};
+});
+var selected='lounge';
+function paintZones(){
+  rooms.forEach(function(rm){var z=zones[rm.id],c=col(score(rm));z.mesh.material.color.setHex(c);z.edge.material.color.setHex(c)});
+}
+/* labels */
+var lbWrap=$('#lbls'), lbEls={};
+rooms.forEach(function(rm){var d=document.createElement('div');d.className='lbl';d.innerHTML=rm.name+'<b></b>';lbWrap.appendChild(d);lbEls[rm.id]=d});
+var v3=new T.Vector3();
+function placeLabels(){
+  var w=el.clientWidth,h=el.clientHeight;
+  rooms.forEach(function(rm){
+    v3.set(rm.pos[0],rm.pos[1]+rm.size[1]/2-0.25,rm.size[2]/2); v3.project(cam);
+    var d=lbEls[rm.id],p=score(rm);
+    d.style.left=((v3.x*0.5+0.5)*w)+'px'; d.style.top=((-v3.y*0.5+0.5)*h)+'px';
+    d.style.setProperty('--c',css(p)); d.classList.toggle('sel',rm.id===selected);
+    d.querySelector('b').textContent=p+'%';
+  });
+}
+function render(){
+  var yaw=S.yaw0+S.user+(reduce?0:Math.sin(S.t*0.3)*0.12);
+  var cp=Math.cos(S.pitch),sp=Math.sin(S.pitch);
+  cam.position.set(Math.sin(yaw)*cp*S.dist,target.y+sp*S.dist,Math.cos(yaw)*cp*S.dist); cam.lookAt(target);
+  rooms.forEach(function(rm){var z=zones[rm.id];var sel=rm.id===selected;z.mesh.material.opacity=sel?(reduce?0.3:0.24+0.1*Math.sin(S.t*3)):0.12;});
+  r.render(sc,cam); placeLabels();
+}
+function resize(){
+  var w=el.clientWidth,h=el.clientHeight; if(!w||!h) return;
+  r.setSize(w,h,false); cam.aspect=w/h; S.dist=22*Math.max(1,1.05/cam.aspect)*Math.max(1,150/h*0.0+1); cam.updateProjectionMatrix(); render();
+}
+new ResizeObserver(resize).observe(el);
+new IntersectionObserver(function(e){S.vis=e[0].isIntersecting}).observe(el);
+(function loop(ts){requestAnimationFrame(loop); if(!S.vis||document.hidden) return; S.t=ts/1000; render()})(0);
+/* drag vs tap */
+var down=null, ray=new T.Raycaster(), nd=new T.Vector2();
+cv.addEventListener('pointerdown',function(e){down={x:e.clientX,y:e.clientY,lx:e.clientX,moved:false};cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing'});
+cv.addEventListener('pointermove',function(e){if(!down)return;if(Math.abs(e.clientX-down.x)>5)down.moved=true;S.user+=(e.clientX-down.lx)*0.009;down.lx=e.clientX});
+function up(e){
+  if(down&&!down.moved&&e.type==='pointerup'){
+    var b=cv.getBoundingClientRect(); nd.set(((e.clientX-b.left)/b.width)*2-1,-((e.clientY-b.top)/b.height)*2+1);
+    ray.setFromCamera(nd,cam);
+    var hit=ray.intersectObjects(rooms.map(function(rm){return zones[rm.id].mesh}),false)[0];
+    if(hit){selected=hit.object.userData.id; sheet();}
+  }
+  down=null; cv.style.cursor='grab';
+}
+cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+/* sheet */
+function sheet(){
+  var rm=rooms.filter(function(x){return x.id===selected})[0], p=score(rm);
+  var html='<div class="hd"><h4>'+rm.name+' <span class="k" style="margin-left:6px">'+rm.note+'</span></h4><span class="pct" style="color:'+css(p)+'">'+p+'%</span></div>';
+  html+=rm.items.map(function(i,ix){
+    return '<button class="item'+(i.have?' have':'')+'" data-i="'+ix+'"><span class="bx"></span><span>'+i.n+(!i.have&&i.tip?'<span class="tip">'+i.tip+'</span>':'')+'</span><em>'+(i.have?'have':(i.p||''))+'</em></button>';
+  }).join('');
+  $('#sheet').innerHTML=html;
+  var tot=0,n=0,weak=null,wp=101; rooms.forEach(function(x){var s=score(x);tot+=s;n++;if(s<wp){wp=s;weak=x}});
+  var all=Math.round(tot/n); $('#allPct').textContent=all+'%'; $('#allPct').style.color=css(all);
+  $('#allNote').innerHTML='Weakest room: '+weak.name+'<br>Fix first: '+(weak.items.filter(function(i){return !i.have}).sort(function(a,b){return b.w-a.w})[0]||{n:'nothing'}).n.toLowerCase();
+  paintZones(); render();
+}
+$('#sheet').addEventListener('click',function(e){
+  var b=e.target.closest('.item'); if(!b) return;
+  var rm=rooms.filter(function(x){return x.id===selected})[0], it=rm.items[+b.dataset.i]; it.have=!it.have; sheet();
+});
+
+/* ---------- crisis ---------- */
+var books={
+  power:{name:'Power cut',dial:['Power cut','Report or get updates','105','#f2b134'],steps:[
+    ['Check the fuse board, then ask a neighbour','if the whole street is dark, report on 105'],
+    ['Use torches, not candles'],
+    ['Keep fridge and freezer doors shut','fridge safe for about 4 hours'],
+    ['Heating is off: your boiler needs power','move to the lounge, close doors, sleeping bags on'],
+    ['Charge phone from power bank','low power mode on, calls and texts first'],
+    ['Light the gas hob with a match for hot drinks','window open']]},
+  water:{name:'No water',dial:['Water company','Number saved for your area','Saved','#fff'],steps:[
+    ['Check neighbours and your water company app'],
+    ['Do not drink from the hot tap'],
+    ['Use stored water: 5 L a day for two','36 L stored = about 7 days'],
+    ['Cooking water first, washing last'],
+    ['Collect from bowser if one is set up','10 L carrier needed']]},
+  gas:{name:'Gas smell',dial:['Gas emergency','National Gas Emergency Service','0800 111 999','#fff'],steps:[
+    ['No flames, no switches, no phone indoors'],
+    ['Open windows and doors'],
+    ['Turn off at the meter if you can do it safely'],
+    ['Leave the house, then call 0800 111 999'],
+    ['Warn neighbours, wait outside']]},
+  flood:{name:'Flood',dial:['Floodline','Flood advice, 24 hours','0345 988 1188','#fff'],steps:[
+    ['Move people, pets and medication upstairs'],
+    ['Switch off gas, electric and water at the mains'],
+    ['Take the grab bag and phone power bank'],
+    ['Do not walk or drive through flood water','15 cm can knock you over'],
+    ['Call 999 if life is at risk']]},
+  storm:{name:'Storm',dial:['Emergency','Police · Fire · Ambulance','999','#fff'],steps:[
+    ['Stay in, away from windows'],
+    ['Bring in or tie down garden items'],
+    ['Charge phones and power bank now'],
+    ['Check on neighbours once it passes'],
+    ['Do not go near downed power lines','report on 105']]}
+};
+var cur='power', done={};
+function cr(){
+  $('#pbs').innerHTML=Object.keys(books).map(function(k){return '<button class="pb" data-b="'+k+'" aria-pressed="'+(k===cur)+'">'+books[k].name+'</button>'}).join('');
+  var b=books[cur], d=b.dial;
+  $('#dial').innerHTML='<div class="dial"'+(d[3]==='#f2b134'?' style="background:#f2b134"':'')+'><div><b>'+d[0]+'</b><span>'+d[1]+'</span></div><strong>'+d[2]+'</strong></div>';
+  $('#steps').innerHTML='<div class="hh" style="padding-bottom:4px">NEXT STEPS · TAP TO TICK</div>'+b.steps.map(function(s,i){
+    return '<button class="step'+(done[cur+i]?' done':'')+'" data-s="'+i+'"><span>'+s[0]+(s[1]?'<small>'+s[1]+'</small>':'')+'</span></button>';
+  }).join('');
+}
+$('#pbs').addEventListener('click',function(e){var b=e.target.closest('.pb');if(!b)return;cur=b.dataset.b;cr()});
+$('#steps').addEventListener('click',function(e){var b=e.target.closest('.step');if(!b)return;var k=cur+b.dataset.s;done[k]=!done[k];cr()});
+$('#toCrisis').addEventListener('click',function(){$('#pbs').scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'})});
+/* crisis tabs: Do / Know / Call */
+(function(){
+  var cb=$('.cbody'), scr=cb.parentNode;
+  var doP=document.createElement('div'); doP.className='pane';
+  ['#pbs','#dial','#steps'].forEach(function(s){doP.appendChild($(s))});
+  var knP=document.createElement('div'); knP.className='pane'; knP.hidden=true;
+  var caP=document.createElement('div'); caP.className='pane'; caP.hidden=true;
+  cb.appendChild(doP); cb.appendChild(knP); cb.appendChild(caP);
+  var nav=document.createElement('div'); nav.className='tabs'; nav.setAttribute('role','tablist');
+  nav.innerHTML=['Do','Know','Call'].map(function(t,i){return '<button class="tab" role="tab" aria-selected="'+(i===0)+'" data-t="'+i+'">'+t+'</button>'}).join('');
+  scr.appendChild(nav);
+  var panes=[doP,knP,caP];
+  nav.addEventListener('click',function(e){var b=e.target.closest('.tab');if(!b)return;nav.querySelectorAll('.tab').forEach(function(x){x.setAttribute('aria-selected',x===b)});panes.forEach(function(p,i){p.hidden=(i!==+b.dataset.t)})});
+  var topics=[
+   ['Keep warm',['Heat people, not the house. Pick one small room, close the doors and hang curtains over windows.','Wear several thin layers, a hat and socks. Use sleeping bags and hot-water bottles.','Keep moving a little, eat regularly and have warm drinks.','!Never use a barbecue, gas oven or hob to heat a room. Carbon monoxide can kill.','Shivering that will not stop, slurred speech or drowsiness: call 999.']],
+   ['Water',['Aim for 2 to 3 litres per person per day to drink and cook. Cut washing before you cut drinking.','Cold kitchen tap water is normally safe unless you are told otherwise. Do not drink from the hot tap.','If unsure, boil water until it bubbles and let it cool. Strain cloudy water through a clean cloth first.','If you get a warning, fill the bath and spare containers early.']],
+   ['Food safety',['Keep fridge and freezer doors shut. Fridge food is safe for about 4 hours.','A full freezer holds for about 48 hours, a half-full one for about 24.','Eat in this order: fridge, then freezer, then cupboard.','!Throw away food that has been warm for over 4 hours. When in doubt, throw it out.']],
+   ['Cook safely',['Gas hob: light it with a match or lighter and never leave it.','Camping stoves only outdoors or by an open window, never in a tent or a closed room.','!Never use a barbecue or generator indoors or in a garage.','Use torches or LED lanterns. If you use candles, use holders and never leave them.','Keep a battery carbon monoxide alarm working.']],
+   ['First aid',['Heavy bleeding: press hard on the wound with a clean cloth, keep pressing and call 999.','Not breathing and not responding: call 999, then push hard and fast in the centre of the chest, 100 to 120 times a minute.','Burn: cool it under running water for 20 minutes.','!This is a reminder, not training. A first aid course is on your Prepare list.']],
+   ['Stay informed',['Radio: BBC Radio 4 LW 198 kHz, plus BBC Essex. Local frequencies are saved at setup.','Texts use less battery than calls. Use low power mode, lower brightness and close apps.','If your phone sounds a loud Emergency Alert, read it and follow the instructions.','Check on neighbours, especially anyone older or vulnerable.']],
+   ['Toilets and hygiene',['No water: flush with a bucket of stored or bath water, poured fast into the bowl.','Use wipes or hand gel, and wash hands before eating when you can.','Double-bag waste and keep it outside until collections resume.']]
+  ];
+  var open=0;
+  function kn(){
+    knP.innerHTML='<div class="hh">SURVIVAL GUIDE · WORKS OFFLINE</div>'+topics.map(function(t,i){
+      var on=i===open;
+      return '<button class="tp" data-i="'+i+'" aria-expanded="'+on+'"><span>'+t[0]+'</span><span>'+(on?'−':'+')+'</span></button>'+(on?'<ul class="tpb">'+t[1].map(function(b){var w=b.charAt(0)==='!';return '<li'+(w?' class="w"':'')+'>'+(w?b.slice(1):b)+'</li>'}).join('')+'</ul>':'');
+    }).join('')+'<div class="hh">Concept text. Check against NHS, FSA and St John Ambulance before release.</div>';
+  }
+  knP.addEventListener('click',function(e){var b=e.target.closest('.tp');if(!b)return;var i=+b.dataset.i;open=(open===i)?-1:i;kn()});
+  kn();
+  var calls=[['Power cut','105 · report or get updates','105'],['Gas emergency','National Gas Emergency Service','0800 111 999'],['Flood','Floodline, 24 hours','0345 988 1188'],['NHS','Medical help, not urgent','111'],['Emergency','Police · Fire · Ambulance','999'],['Water company','Saved for your address at setup','Saved'],['GP surgery','Saved at setup','Saved']];
+  caP.innerHTML=calls.map(function(c,i){return '<div class="dial"'+(i===0?' style="background:#f2b134"':'')+'><div><b>'+c[0]+'</b><span>'+c[1]+'</span></div><strong>'+c[2]+'</strong></div>'}).join('');
+})();
+
+/* ---------- prepare ---------- */
+(function(){
+  var tasks=[
+   [1,'buy','Torch and spare batteries','Light without plugs or candles.','£8'],
+   [1,'learn','Find your stopcock, gas and electric isolators','In a flood or burst pipe you have minutes. Label them.','10 min'],
+   [1,'buy','15 L of stored water','Two adults for three days.','£6'],
+   [1,'buy','Power bank, 20,000 mAh','Four phone charges when the mains is off.','£15'],
+   [1,'plan','Write the household plan','Contacts, meeting place, medication list. One page, kept in the grab bag.','20 min'],
+   [1,'buy','Wind-up or battery radio','Local radio is how you get news when masts are down.','£20'],
+   [1,'buy','3 days of food that needs no cooking','Things you would actually eat.','£15'],
+   [2,'buy','Raise stored water to 36 L','Seven days at 2.5 L each for two.','£12'],
+   [2,'buy','Camping stove and 4 canisters','Hot food and drinks when the hob is not an option.','£25'],
+   [2,'buy','Two sleeping bags','Heat people, not the house.','£50'],
+   [2,'learn','Book a first aid course','St John Ambulance or Red Cross. Half a day.','3 hours'],
+   [2,'drill','Lights-out evening','Three hours with the mains off. Find out what you forgot.','3 hours'],
+   [2,'buy','Seven days of food','Add tins of fish, beans and rice.','£30'],
+   [2,'plan','Meet your neighbours','Swap numbers. Note who may need help.','30 min'],
+   [2,'buy','£50 in small notes','Card tills fail in a power cut.','£50'],
+   [3,'buy','Add protein to reach 10 days','Your pantry shelf shows protein is the thin spot.','£25'],
+   [3,'plan','Ask the pharmacy for a month of medication','Sweden advises a month.','10 min'],
+   [3,'drill','24 hours with no mains','A weekend rehearsal.','24 hours'],
+   [3,'buy','Water purification tablets','For when stored water runs out.','£10']
+  ].map(function(a,i){return {id:i,t:a[0],k:a[1],n:a[2],why:a[3],c:a[4],d:i<4||i===5}});
+  var skip=0;
+  var tiers=[['UK','3 days'],['Sweden · Norway','7 days'],['Germany','10 days']];
+  var col=$('.duo'); var d=document.createElement('div'); d.className='col';
+  d.innerHTML='<div class="cap"><div class="eyebrow">2 · Before</div><h2>Prepare</h2><p>A ladder from the UK 72 hours up to the Nordic week and the German ten days, one small task at a time.</p></div>'+
+   '<div class="phone"><div class="screen"><div class="sbar"><span>19:20</span><span>Offline · 76%</span></div>'+
+   '<div class="appbar"><h3>Prepare</h3><div class="sub" id="prSub"></div></div><div class="pbody" id="prBody"></div></div></div>';
+  col.appendChild(d);
+  function prog(t){var a=tasks.filter(function(x){return x.t===t}),n=a.filter(function(x){return x.d}).length;return {n:n,m:a.length}}
+  function draw(){
+    var cur=0; for(var t=1;t<=3;t++){var p=prog(t);if(p.n<p.m){cur=t;break}} if(!cur) cur=3;
+    $('#prSub').innerHTML='Now building<br>'+tiers[cur-1][1]+' ('+tiers[cur-1][0]+')';
+    var undone=tasks.filter(function(x){return !x.d});
+    var wk=undone.length?undone[skip%undone.length]:null;
+    var up=undone.filter(function(x){return !wk||x.id!==wk.id}).slice(0,4);
+    var h='<div style="display:grid;gap:6px">'+tiers.map(function(tr,i){var p=prog(i+1);return '<div class="rung'+(i+1===cur?' cur':'')+'"><div><b>'+tr[1]+'</b>'+tr[0]+'</div><div class="rb"><u style="width:'+(100*p.n/p.m)+'%"></u></div><div>'+p.n+'/'+p.m+'</div></div>'}).join('')+'</div>';
+    if(wk){
+      h+='<div class="wk"><div class="k">This week\'s one thing</div><h4>'+wk.n+'</h4><p>'+wk.why+'</p><div class="tg"><span class="k1">'+wk.k+'</span><span>'+wk.c+'</span><span>'+tiers[wk.t-1][1]+' step</span></div><div class="btnrow"><button class="btn pri" data-a="done" data-i="'+wk.id+'">Done</button><button class="btn" data-a="skip">Not now</button></div></div>';
+    } else h+='<div class="wk"><h4>All steps done</h4><p>Review your list every six months.</p></div>';
+    h+='<div class="k">Coming up</div><div class="up">'+up.map(function(x){return '<button class="item" data-a="done" data-i="'+x.id+'"><span class="bx"></span><span>'+x.n+'</span><em>'+x.k+' · '+x.c+'</em></button>'}).join('')+'</div>';
+    h+='<div class="k">Bedtime reading</div><div class="rd"><a href="https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency" target="_blank" rel="noopener">GOV.UK: small, simple steps<span>UK official · Be Ready</span></a><a href="https://www.redcross.org.uk/get-help/prepare-for-emergencies/prepare-an-emergency-kit" target="_blank" rel="noopener">Build an emergency kit<span>British Red Cross</span></a><a href="https://www.mcf.se/en/advice-for-individuals/home-preparedness--prepping-for-at-least-a-week/basics-of-home-emergency-preparedness/" target="_blank" rel="noopener">Prepping for a week<span>Sweden · Civil Defence and Resilience Agency</span></a><a href="https://www.sja.org.uk/first-aid-advice/" target="_blank" rel="noopener">First aid advice<span>St John Ambulance</span></a></div>';
+    h+='<div class="k" style="line-height:1.5">Official advice: UK 72 hours, Sweden and Norway one week, Germany ten days.</div>';
+    $('#prBody').innerHTML=h;
+  }
+  d.addEventListener('click',function(e){
+    var b=e.target.closest('[data-a]'); if(!b) return;
+    if(b.dataset.a==='done'){tasks[+b.dataset.i].d=true}
+    else skip++;
+    draw();
+  });
+  draw();
+})();
+
+cr(); sheet(); resize();
+})();
+</script>
