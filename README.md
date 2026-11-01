@@ -9,6 +9,8 @@ No account. No tracking. No panic. Just a calm list, and a torch that works.
 
 <img src="docs/demo.gif" alt="Ready on a phone: the Prepare ladder, a 3D cutaway home scored by readiness, and Crisis mode with big tickable steps" width="300">
 
+**[Try it live: ready-uk.netlify.app](https://ready-uk.netlify.app)**
+
 _Prepare, a house that scores itself, and a Crisis mode you can use at 2 am with 4% battery._
 
 </div>
@@ -67,7 +69,9 @@ Prefer boring? There's a plain 2D view with the same numbers. It's also what you
 
 ## Try it
 
-**Run it locally:**
+**Use it now:** open <https://ready-uk.netlify.app> on your phone and add it to your home screen. No sign-up, no app store.
+
+**Or run it locally:**
 
 ```bash
 git clone https://github.com/ChrisBrooksbank/prep.git
