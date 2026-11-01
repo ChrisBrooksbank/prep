@@ -116,6 +116,7 @@ export function startRouter(root: HTMLElement): void {
         buildCrisisControl(),
       );
     main.id = 'main';
+    main.setAttribute('role', 'main');
     root.replaceChildren(header, main);
   };
   window.addEventListener('hashchange', () => void show());
