@@ -3,12 +3,18 @@ import { prepareTasks } from '../data/tasks';
 import {
   allTierProgress,
   comingUp,
+  costLine,
   currentTier,
   nextTask,
+  readPrepareProgress,
+  setTaskDone,
+  skipInProgress,
   scaleTask,
   skipTask,
   tierProgress,
   visibleTasks,
+  withoutPrepareProgress,
+  withPrepareProgress,
   waterLitres,
 } from './prepare';
 import { defaultProfile, type Profile } from './profile';
@@ -94,5 +100,41 @@ describe('household scaling', () => {
     const electric = visibleTasks(prepareTasks, { ...base, cooking: 'induction' });
     expect(gas.some((t) => t.id === 'camping-stove')).toBe(false);
     expect(electric.some((t) => t.id === 'camping-stove')).toBe(true);
+  });
+});
+
+describe('prepare progress storage', () => {
+  it('reads malformed progress as empty', () => {
+    expect(readPrepareProgress({})).toEqual({ done: [], skipped: [] });
+    expect(readPrepareProgress({ prepare: 'x' })).toEqual({ done: [], skipped: [] });
+    expect(readPrepareProgress({ prepare: { done: ['a', 1, 'a'], skipped: 'b' } })).toEqual({
+      done: ['a'],
+      skipped: [],
+    });
+  });
+  it('keeps other progress keys when writing and when removing', () => {
+    const next = withPrepareProgress({ crisis: { ticks: {} } }, { done: ['torch'], skipped: [] });
+    expect(next.crisis).toEqual({ ticks: {} });
+    const cleared = withoutPrepareProgress(next);
+    expect(cleared).toEqual({ crisis: { ticks: {} } });
+  });
+  it('marks done and undone, clearing skips', () => {
+    const a = setTaskDone({ done: [], skipped: ['torch'] }, 'torch', true);
+    expect(a).toEqual({ done: ['torch'], skipped: [] });
+    expect(setTaskDone(a, 'torch', false).done).toEqual([]);
+  });
+  it('skips with wraparound', () => {
+    const ids = prepareTasks.map((t) => t.id);
+    let p = { done: [] as string[], skipped: [] as string[] };
+    for (const id of ids) p = skipInProgress(prepareTasks, p, id);
+    expect(p.skipped).toEqual([]);
+    expect(skipInProgress(prepareTasks, p, ids[0]!).skipped).toEqual([ids[0]]);
+  });
+});
+
+describe('costLine', () => {
+  it('formats ranges and times', () => {
+    expect(costLine(byId('torch'))).toBe('about £6 to £12');
+    expect(costLine(byId('isolators'))).toBe('10 min');
   });
 });

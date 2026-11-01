@@ -6,6 +6,7 @@ import {
   effectiveReduceMotion,
   readDisplaySettings,
 } from '../logic/settings';
+import { withoutPrepareProgress } from '../logic/prepare';
 import { getStore } from '../storage/instance';
 import { applyReduceMotion, applyTheme } from '../ui/theme';
 
@@ -138,6 +139,15 @@ export async function renderSettings(): Promise<HTMLElement> {
     deleteButton.after(confirmRow);
   });
 
+  const resetPrepare = button('Reset Prepare progress', () => {
+    void store
+      .update((d) => ({ ...d, progress: withoutPrepareProgress(d.progress) }))
+      .then(() => {
+        status.textContent =
+          'Prepare progress reset. Your household and Crisis mode ticks are kept.';
+      });
+  });
+
   const updated = adviceLastUpdated(datasets);
   const advice = document.createElement('p');
   advice.textContent = updated
@@ -155,6 +165,7 @@ export async function renderSettings(): Promise<HTMLElement> {
     motionLabel,
     heading('Your data'),
     dataActions,
+    resetPrepare,
     deleteButton,
     status,
     heading('Advice'),

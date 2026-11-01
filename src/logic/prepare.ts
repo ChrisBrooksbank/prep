@@ -141,3 +141,69 @@ export function scaleTask(task: PrepareTask, profile: Profile): ScaledTask {
       return { task, detail: null };
   }
 }
+
+/** Prepare progress as stored under `progress.prepare`. */
+export interface PrepareProgress {
+  done: string[];
+  skipped: string[];
+}
+
+function stringList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(value.filter((v): v is string => typeof v === 'string'))];
+}
+
+/** Reads `progress.prepare` defensively; anything malformed is dropped. */
+export function readPrepareProgress(progress: Record<string, unknown>): PrepareProgress {
+  const raw = progress.prepare;
+  if (typeof raw !== 'object' || raw === null) return { done: [], skipped: [] };
+  const { done, skipped } = raw as Record<string, unknown>;
+  return { done: stringList(done), skipped: stringList(skipped) };
+}
+
+/** Returns a new progress object with the prepare part replaced; other keys are kept. */
+export function withPrepareProgress(
+  progress: Record<string, unknown>,
+  prepare: PrepareProgress,
+): Record<string, unknown> {
+  return { ...progress, prepare };
+}
+
+/** Removes only the prepare part, keeping crisis ticks and anything else. */
+export function withoutPrepareProgress(progress: Record<string, unknown>): Record<string, unknown> {
+  const rest = { ...progress };
+  delete rest.prepare;
+  return rest;
+}
+
+/** Mark a task done or not done. Doing a task clears any skip. */
+export function setTaskDone(
+  progress: PrepareProgress,
+  id: string,
+  isDone: boolean,
+): PrepareProgress {
+  const done = progress.done.filter((d) => d !== id);
+  if (isDone) done.push(id);
+  return { done, skipped: progress.skipped.filter((s) => s !== id) };
+}
+
+/** Skip a task ("Not now"), wrapping round once every open task has been skipped. */
+export function skipInProgress(
+  tasks: readonly PrepareTask[],
+  progress: PrepareProgress,
+  id: string,
+): PrepareProgress {
+  return {
+    done: progress.done,
+    skipped: skipTask(tasks, new Set(progress.done), progress.skipped, id),
+  };
+}
+
+/** Cost or time as plain words, e.g. "about £6 to £12" or "10 min". */
+export function costLine(task: PrepareTask): string | null {
+  if (task.cost) {
+    const { min, max } = task.cost;
+    return min === max ? `about £${min}` : `about £${min} to £${max}`;
+  }
+  return task.time ?? null;
+}
