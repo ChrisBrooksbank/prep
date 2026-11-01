@@ -40,7 +40,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Know tab: single-open accordion, distinct danger lines, source + lastChecked per topic, First aid links to Prepare task "Book a first aid course" (spec: crisis-mode.md)
 - [x] Call tab: cards with tappable `tel:` and selectable plain text; water company and GP from profile (spec: crisis-mode.md)
 - [x] Automated crisis check: no animation, no canvas, no external requests; axe check on each tab (add @axe-core/playwright) (spec: crisis-mode.md)
-- [ ] Smoke tests: tick step, reload, persists; profile change removes gas hob step; offline tabs work (spec: crisis-mode.md)
+- [x] Smoke tests: tick step, reload, persists; profile change removes gas hob step; offline tabs work (spec: crisis-mode.md)
 
 ### 4. Prepare programme
 - [ ] Tiers data file (3 / 7 / 10 days, sources GOV.UK, mcf.se, dsb.no, BBK, `needsReview` where unverified) (spec: prepare-programme.md)
