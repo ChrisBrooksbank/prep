@@ -14,6 +14,8 @@ import {
   WebGLRenderer,
 } from 'three';
 import type { PantryCategoryId } from '../logic/home';
+import { clampPixelRatio } from '../logic/render-control';
+import { watchRenderGate } from './render-gate';
 import { BOARD_Y, itemSpots, MAX_ITEMS_PER_CATEGORY, visibleItems } from '../logic/pantry-scene';
 
 export interface ShelfScene {
@@ -55,7 +57,7 @@ export function createShelfScene(opts: ShelfSceneOptions): ShelfScene | null {
   } catch {
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(clampPixelRatio(window.devicePixelRatio));
   const canvas = renderer.domElement;
   canvas.className = 'home-canvas pantry-canvas';
   canvas.setAttribute('role', 'img');
@@ -122,6 +124,7 @@ export function createShelfScene(opts: ShelfSceneOptions): ShelfScene | null {
 
   let disposed = false;
   let raf = 0;
+  let paused = false;
   const render = (): void => {
     raf = 0;
     if (disposed) return;
@@ -135,8 +138,18 @@ export function createShelfScene(opts: ShelfSceneOptions): ShelfScene | null {
     renderer.render(scene, camera);
   };
   const requestRender = (): void => {
-    if (!raf && !disposed) raf = requestAnimationFrame(render);
+    if (!raf && !disposed && !paused) raf = requestAnimationFrame(render);
   };
+
+  const gate = watchRenderGate(canvas, (active) => {
+    paused = !active;
+    if (paused) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    } else {
+      requestRender();
+    }
+  });
 
   apply(opts.stock, opts.weakest);
   requestRender();
@@ -149,6 +162,7 @@ export function createShelfScene(opts: ShelfSceneOptions): ShelfScene | null {
     },
     dispose() {
       disposed = true;
+      gate.dispose();
       cancelAnimationFrame(raf);
       geometry.dispose();
       renderer.dispose();

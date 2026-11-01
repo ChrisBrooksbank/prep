@@ -3,7 +3,7 @@
 ## Status
 
 - Planning iterations: 3 (re-verified: codebase still empty, plan still matches all four specs; no changes needed)
-- Build iterations: 19
+- Build iterations: 20
 - Last updated: 2026-11-01
 
 Codebase is empty (no package.json, no src). Everything below is unimplemented. One task = one build iteration.
@@ -57,7 +57,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] 2D Pantry view: household selector, cover ring/bars with 3/7/10 ticks and tier chips, add/reset buttons, persisted stock (spec: home-model-pantry.md)
 - [x] three.js house scene (lazy chunk): cutaway, rooms coloured by readiness, HTML labels, drag-to-rotate, raycast tap with drag threshold, pulse (spec: home-model-pantry.md)
 - [x] three.js pantry shelf: instanced meshes per category, weakest glows (spec: home-model-pantry.md)
-- [ ] Render controls: IntersectionObserver + visibilitychange pause, pixel ratio cap 2, reduced-motion static render, battery saver toggle, WebGL-unavailable and Crisis-mode fallback to 2D (spec: home-model-pantry.md)
+- [x] Render controls: IntersectionObserver + visibilitychange pause, pixel ratio cap 2, reduced-motion static render, battery saver toggle, WebGL-unavailable and Crisis-mode fallback to 2D (spec: home-model-pantry.md)
 - [ ] Smoke tests: canvas non-blank pixel check, tap room changes sheet title, tick changes percentage, 2D fallback matches numbers, Home chunk loads only when opened (spec: home-model-pantry.md)
 
 ## Completed

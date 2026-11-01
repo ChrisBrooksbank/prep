@@ -24,6 +24,8 @@ import {
   zoneColour,
   type RoomBox,
 } from '../logic/home-scene';
+import { clampPixelRatio } from '../logic/render-control';
+import { watchRenderGate } from './render-gate';
 
 export interface SceneRoom {
   id: string;
@@ -84,7 +86,7 @@ export function createHouseScene(opts: HouseSceneOptions): HouseScene | null {
   } catch {
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(clampPixelRatio(window.devicePixelRatio));
   const canvas = renderer.domElement;
   canvas.className = 'home-canvas';
   canvas.setAttribute('role', 'img');
@@ -156,6 +158,7 @@ export function createHouseScene(opts: HouseSceneOptions): HouseScene | null {
   let yaw = 0;
   let raf = 0;
   let disposed = false;
+  let paused = false;
 
   const applyState = (): void => {
     for (const room of rooms) {
@@ -201,7 +204,7 @@ export function createHouseScene(opts: HouseSceneOptions): HouseScene | null {
     raf = opts.reduceMotion ? 0 : requestAnimationFrame(loop);
   };
   const requestRender = (): void => {
-    if (disposed) return;
+    if (disposed || paused) return;
     if (opts.reduceMotion) {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame((t) => {
@@ -246,6 +249,17 @@ export function createHouseScene(opts: HouseSceneOptions): HouseScene | null {
     start = null;
   });
 
+  // Draw only while on screen and the tab is in the foreground.
+  const gate = watchRenderGate(canvas, (active) => {
+    paused = !active;
+    if (paused) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    } else {
+      requestRender();
+    }
+  });
+
   applyState();
   requestRender();
 
@@ -259,6 +273,7 @@ export function createHouseScene(opts: HouseSceneOptions): HouseScene | null {
     },
     dispose() {
       disposed = true;
+      gate.dispose();
       cancelAnimationFrame(raf);
       renderer.dispose();
       wrap.remove();

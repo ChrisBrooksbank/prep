@@ -15,6 +15,7 @@ import {
   withHomeProgress,
   type HomeProgress,
 } from '../logic/home-progress';
+import { readBatterySaver } from '../logic/render-control';
 import { defaultProfile, normaliseProfile } from '../logic/profile';
 import { getStore } from '../storage/instance';
 import { renderPantry } from './pantry';
@@ -38,13 +39,14 @@ export async function renderHome(): Promise<HTMLElement> {
   const profile = normaliseProfile(data.profile) ?? defaultProfile();
   let progress: HomeProgress = readHomeProgress(data.progress, exampleOwnedItemIds);
   let selectedId: string = homeRooms[0]?.id ?? '';
+  const batterySaver = readBatterySaver(data.settings);
 
   const root = el('section');
   root.setAttribute('aria-labelledby', 'area-title');
   const title = el('h1', '', 'Home');
   title.id = 'area-title';
   const roomsView = el('div', 'home-view');
-  const pantryView = renderPantry(store, data.progress, profile);
+  const pantryView = renderPantry(store, data.progress, profile, batterySaver);
   pantryView.hidden = true;
   const switcher = el('div', 'home-switch');
   switcher.setAttribute('role', 'group');
@@ -80,6 +82,7 @@ export async function renderHome(): Promise<HTMLElement> {
       percent: s.percent,
     }));
   const startScene = async (): Promise<void> => {
+    if (batterySaver) return; // 2D view only
     try {
       const { createHouseScene } = await import('../ui/home-scene');
       scene = createHouseScene({

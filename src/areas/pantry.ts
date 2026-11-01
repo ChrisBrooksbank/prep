@@ -85,6 +85,7 @@ export function renderPantry(
   store: Store,
   initial: Record<string, unknown>,
   profile: Profile | null,
+  batterySaver = false,
 ): HTMLElement {
   let progress: PantryProgress = readPantryProgress(initial, examplePantryStock);
   const root = el('div', 'pantry');
@@ -93,6 +94,7 @@ export function renderPantry(
   let shelf: ShelfScene | null = null;
   const stage = el('div', 'home-scene pantry-scene');
   const startShelf = async (): Promise<void> => {
+    if (batterySaver) return; // 2D bars only
     try {
       const { createShelfScene } = await import('../ui/pantry-scene');
       const people = progress.people ?? pantryPeople(profile);

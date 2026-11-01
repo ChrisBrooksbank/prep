@@ -7,6 +7,7 @@ import {
   readDisplaySettings,
 } from '../logic/settings';
 import { withoutPrepareProgress } from '../logic/prepare';
+import { readBatterySaver } from '../logic/render-control';
 import { getStore } from '../storage/instance';
 import { applyReduceMotion, applyTheme } from '../ui/theme';
 
@@ -84,6 +85,14 @@ export async function renderSettings(): Promise<HTMLElement> {
     saveSetting('reduceMotion', motion.checked);
   });
   motionLabel.append(motion, document.createTextNode('Reduce motion'));
+
+  const saverLabel = document.createElement('label');
+  saverLabel.className = 'choice';
+  const saver = document.createElement('input');
+  saver.type = 'checkbox';
+  saver.checked = readBatterySaver((await store.load()).settings);
+  saver.addEventListener('change', () => saveSetting('batterySaver', saver.checked));
+  saverLabel.append(saver, document.createTextNode('Battery saver (2D views only, no 3D)'));
 
   const file = document.createElement('input');
   file.type = 'file';
@@ -163,6 +172,7 @@ export async function renderSettings(): Promise<HTMLElement> {
     heading('Display'),
     themeField,
     motionLabel,
+    saverLabel,
     heading('Your data'),
     dataActions,
     resetPrepare,
