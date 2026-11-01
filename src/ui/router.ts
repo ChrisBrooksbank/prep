@@ -2,7 +2,9 @@ import {
   AREAS,
   AREA_LABELS,
   ONBOARDING_HASH,
+  SETTINGS_HASH,
   isOnboardingRoute,
+  isSettingsRoute,
   parseRoute,
   routeHash,
   type Area,
@@ -13,6 +15,7 @@ import { renderOnboarding } from '../areas/onboarding';
 import { getStore } from '../storage/instance';
 import { renderCrisis } from '../areas/crisis';
 import { renderPrepare } from '../areas/prepare';
+import { renderSettings } from '../areas/settings';
 
 async function renderArea(area: Area): Promise<HTMLElement> {
   if (area === 'crisis') return renderCrisis();
@@ -49,6 +52,13 @@ function buildHouseholdLink(): HTMLElement {
   return a;
 }
 
+function buildSettingsLink(): HTMLElement {
+  const a = document.createElement('a');
+  a.href = SETTINGS_HASH;
+  a.textContent = 'Settings';
+  return a;
+}
+
 async function renderOnboardingScreen(): Promise<HTMLElement> {
   const store = await getStore();
   const data = await store.load();
@@ -76,15 +86,20 @@ export function startRouter(root: HTMLElement): void {
   let token = 0;
   const show = async (): Promise<void> => {
     const onboarding = isOnboardingRoute(location.hash);
+    const settings = isSettingsRoute(location.hash);
     const area = parseRoute(location.hash);
     const mine = ++token;
-    if (!onboarding && (await firstRunRedirect(area))) {
+    if (!onboarding && !settings && (await firstRunRedirect(area))) {
       if (mine === token) location.replace(ONBOARDING_HASH);
       return;
     }
-    const main = onboarding ? await renderOnboardingScreen() : await renderArea(area);
+    const main = onboarding
+      ? await renderOnboardingScreen()
+      : settings
+        ? await renderSettings()
+        : await renderArea(area);
     if (mine !== token) return;
-    root.dataset.area = onboarding ? 'onboarding' : area;
+    root.dataset.area = onboarding ? 'onboarding' : settings ? 'settings' : area;
     const header = document.createElement('header');
     const brand = document.createElement('span');
     brand.className = 'brand';
@@ -92,8 +107,14 @@ export function startRouter(root: HTMLElement): void {
     header.append(brand);
     // Crisis mode is its own full-screen state: no area nav, no way to wander off by accident.
     if (onboarding) header.append(buildCrisisControl());
+    else if (settings) header.append(buildNav(area), buildCrisisControl());
     else if (area !== 'crisis')
-      header.append(buildNav(area), buildHouseholdLink(), buildCrisisControl());
+      header.append(
+        buildNav(area),
+        buildHouseholdLink(),
+        buildSettingsLink(),
+        buildCrisisControl(),
+      );
     main.id = 'main';
     root.replaceChildren(header, main);
   };

@@ -24,3 +24,9 @@ export const ONBOARDING_HASH = '#onboarding';
 export function isOnboardingRoute(hash: string): boolean {
   return hash.replace(/^#\/?/, '').toLowerCase() === 'onboarding';
 }
+
+export const SETTINGS_HASH = '#settings';
+
+export function isSettingsRoute(hash: string): boolean {
+  return hash.replace(/^#\/?/, '').toLowerCase() === 'settings';
+}

@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_AREA, parseRoute, routeHash } from './route';
+import { DEFAULT_AREA, isSettingsRoute, parseRoute, routeHash } from './route';
+
+describe('isSettingsRoute', () => {
+  it('matches the settings hash only', () => {
+    expect(isSettingsRoute('#settings')).toBe(true);
+    expect(isSettingsRoute('#/Settings')).toBe(true);
+    expect(isSettingsRoute('#prepare')).toBe(false);
+  });
+});
 
 describe('parseRoute', () => {
   it('reads the three areas', () => {
