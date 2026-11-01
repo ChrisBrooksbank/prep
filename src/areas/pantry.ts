@@ -11,6 +11,7 @@ import {
 } from '../logic/pantry-progress';
 import type { Profile } from '../logic/profile';
 import type { Store } from '../storage/store';
+import type { ShelfScene } from '../ui/pantry-scene';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const MAX_DAYS = Math.max(10, ...tiers.map((t) => t.days));
@@ -87,6 +88,24 @@ export function renderPantry(
 ): HTMLElement {
   let progress: PantryProgress = readPantryProgress(initial, examplePantryStock);
   const root = el('div', 'pantry');
+
+  // The 3D shelf is a lazy chunk. Any failure leaves the 2D bars as the whole experience.
+  let shelf: ShelfScene | null = null;
+  const stage = el('div', 'home-scene pantry-scene');
+  const startShelf = async (): Promise<void> => {
+    try {
+      const { createShelfScene } = await import('../ui/pantry-scene');
+      const people = progress.people ?? pantryPeople(profile);
+      const cover = pantryCover(pantryCategories, progress.stock, people);
+      shelf = createShelfScene({
+        container: stage,
+        stock: progress.stock,
+        weakest: cover.weakest,
+      });
+    } catch {
+      shelf = null;
+    }
+  };
 
   const persist = async (next: PantryProgress, focusSelector?: string): Promise<void> => {
     progress = next;
@@ -199,10 +218,12 @@ export function renderPantry(
       () => void persist(resetStock(progress), '[data-pantry-reset]'),
     );
 
-    root.replaceChildren(summary, list, reset);
+    root.replaceChildren(stage, summary, list, reset);
+    shelf?.update(progress.stock, cover.weakest);
     if (focusSelector) root.querySelector<HTMLElement>(focusSelector)?.focus();
   }
 
   draw();
+  void startShelf();
   return root;
 }
