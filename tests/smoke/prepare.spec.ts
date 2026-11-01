@@ -19,3 +19,14 @@ test('Not now moves to a different task and the current tier is highlighted', as
   await expect(title).not.toHaveText(first ?? '');
   await expect(page.locator('.prepare-rung.current')).toHaveCount(1);
 });
+
+test('reading links open in a new tab with rel="noopener"', async ({ page }) => {
+  await openSkippingOnboarding(page, '#prepare');
+  const links = page.locator('.reading-list a');
+  const total = await links.count();
+  expect(total).toBeGreaterThan(0);
+  for (let i = 0; i < total; i++) {
+    await expect(links.nth(i)).toHaveAttribute('rel', 'noopener');
+    await expect(links.nth(i)).toHaveAttribute('target', '_blank');
+  }
+});

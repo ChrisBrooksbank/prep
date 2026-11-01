@@ -48,7 +48,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Pure logic + unit tests: tier progress, current tier, next-task with skip wraparound, household scaling (water, food days, sleeping bags, camping stove vs gas hob) (spec: prepare-programme.md)
 - [x] Prepare UI: "This week's one thing" (Done / Not now), "Coming up" (next four, tickable), ladder with progress bars and current tier highlight, persisted done state, reset in settings (spec: prepare-programme.md)
 - [x] Reading list data (with `verifiedOn`, groups, countries; URLs from prototype) + Read section UI with `rel="noopener"`, new tab, offline note; dev-only unverified report (spec: prepare-programme.md)
-- [ ] Smoke test: mark first task done, reload, ladder count persists; reading links carry `rel="noopener"` (spec: prepare-programme.md)
+- [x] Smoke test: mark first task done, reload, ladder count persists; reading links carry `rel="noopener"` (spec: prepare-programme.md)
 
 ### 5. Home model and pantry
 - [ ] Pure logic module + unit tests: room/home scores, weakest room, most valuable missing item, profile-driven item filtering, days of cover, weakest category (spec: home-model-pantry.md)
