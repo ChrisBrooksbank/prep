@@ -45,7 +45,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 ### 4. Prepare programme
 - [x] Tiers data file (3 / 7 / 10 days, sources GOV.UK, mcf.se, dsb.no, BBK, `needsReview` where unverified) (spec: prepare-programme.md)
 - [x] Tasks data file: 19 tasks from prototype with UK price ranges, `pricesCheckedOn`, household-scalable fields (spec: prepare-programme.md)
-- [ ] Pure logic + unit tests: tier progress, current tier, next-task with skip wraparound, household scaling (water, food days, sleeping bags, camping stove vs gas hob) (spec: prepare-programme.md)
+- [x] Pure logic + unit tests: tier progress, current tier, next-task with skip wraparound, household scaling (water, food days, sleeping bags, camping stove vs gas hob) (spec: prepare-programme.md)
 - [ ] Prepare UI: "This week's one thing" (Done / Not now), "Coming up" (next four, tickable), ladder with progress bars and current tier highlight, persisted done state, reset in settings (spec: prepare-programme.md)
 - [ ] Reading list data (with `verifiedOn`, groups, countries; URLs from prototype) + Read section UI with `rel="noopener"`, new tab, offline note; dev-only unverified report (spec: prepare-programme.md)
 - [ ] Smoke test: mark first task done, reload, ladder count persists; reading links carry `rel="noopener"` (spec: prepare-programme.md)
