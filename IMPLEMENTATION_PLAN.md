@@ -3,7 +3,7 @@
 ## Status
 
 - Planning iterations: 3 (re-verified: codebase still empty, plan still matches all four specs; no changes needed)
-- Build iterations: 1
+- Build iterations: 4
 - Last updated: 2026-11-01
 
 Codebase is empty (no package.json, no src). Everything below is unimplemented. One task = one build iteration.
@@ -14,7 +14,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Scaffold Vite + TypeScript (strict), npm, `index.html` with `lang="en-GB"`, `src/main.ts`, folder layout `src/{areas,data,logic,storage,ui}` (spec: pwa-shell-offline.md)
 - [x] ESLint (typescript-eslint) + Prettier configs and scripts `lint`, `format:check`, `typecheck` (spec: AGENTS.md)
 - [x] Vitest with one trivial passing test; script `test:run` (spec: AGENTS.md)
-- [ ] Playwright config against `vite preview`, one smoke test that the page loads; script `test:smoke` (spec: AGENTS.md)
+- [x] Playwright config against `vite preview`, one smoke test that the page loads; script `test:smoke` (spec: AGENTS.md)
 - [ ] `npm run check` chaining typecheck, lint, format check, test:run, build, test:smoke; add `.gitignore` entries (node_modules, dist, test-results) (spec: AGENTS.md)
 
 ### 2. PWA shell and offline
