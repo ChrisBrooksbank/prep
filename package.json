@@ -14,7 +14,8 @@
     "test:run": "vitest run",
     "test": "vitest",
     "test:smoke": "playwright test",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:run && npm run build && npm run test:smoke"
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:run && npm run build && npm run check:bundle && npm run test:smoke"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

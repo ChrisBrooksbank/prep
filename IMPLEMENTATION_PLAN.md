@@ -3,7 +3,7 @@
 ## Status
 
 - Planning iterations: 3 (re-verified: codebase still empty, plan still matches all four specs; no changes needed)
-- Build iterations: 14
+- Build iterations: 17
 - Last updated: 2026-11-01
 
 Codebase is empty (no package.json, no src). Everything below is unimplemented. One task = one build iteration.
@@ -29,7 +29,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Web manifest + maskable icons + vite-plugin-pwa service worker precaching shell and data; update-ready prompt that never reloads mid-use or in crisis mode (spec: pwa-shell-offline.md)
 - [x] Optional Battery Status hint (<20 percent suggests Crisis mode), progressive enhancement (spec: pwa-shell-offline.md)
 - [x] Smoke tests: offline reload renders all three areas; no cross-origin requests at runtime; delete-all returns to onboarding; Lighthouse/installability check (spec: pwa-shell-offline.md)
-- [ ] Bundle budget check: Crisis + shell JS under 150 KB gzipped, three.js in separate chunk (spec: pwa-shell-offline.md)
+- [x] Bundle budget check: Crisis + shell JS under 150 KB gzipped, three.js in separate chunk (spec: pwa-shell-offline.md)
 
 ### 3. Crisis mode (core value)
 - [ ] Crisis data files: playbooks (5), know topics (7, seeded from prototype `topics`, `needsReview: true`), call numbers, each with source/lastChecked (spec: crisis-mode.md)
