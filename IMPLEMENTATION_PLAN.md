@@ -52,7 +52,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 
 ### 5. Home model and pantry
 - [x] Pure logic module + unit tests: room/home scores, weakest room, most valuable missing item, profile-driven item filtering, days of cover, weakest category (spec: home-model-pantry.md)
-- [ ] Room item data and pantry category data (`needsReview` on BBK figures), marked as example until user edits (spec: home-model-pantry.md)
+- [x] Room item data and pantry category data (`needsReview` on BBK figures), marked as example until user edits (spec: home-model-pantry.md)
 - [ ] 2D Home view: room list/bars, bottom sheet with tickable items, persisted ownership; this is also the fallback view (spec: home-model-pantry.md)
 - [ ] 2D Pantry view: household selector, cover ring/bars with 3/7/10 ticks and tier chips, add/reset buttons, persisted stock (spec: home-model-pantry.md)
 - [ ] three.js house scene (lazy chunk): cutaway, rooms coloured by readiness, HTML labels, drag-to-rotate, raycast tap with drag threshold, pulse (spec: home-model-pantry.md)

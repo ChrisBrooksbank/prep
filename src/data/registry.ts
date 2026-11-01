@@ -1,6 +1,8 @@
 import { callCards } from './crisis-calls';
 import { playbooks } from './crisis-playbooks';
 import { knowTopics } from './crisis-topics';
+import { homeRooms } from './home-rooms';
+import { pantryCategories } from './pantry';
 import { readingLinks } from './reading';
 import type { Dataset } from './sourced';
 import { prepareTasks } from './tasks';
@@ -14,4 +16,6 @@ export const datasets: readonly Dataset[] = [
   { name: 'tiers', items: tiers.map((t) => ({ ...t, id: `tier-${t.tier}` })) },
   { name: 'prepare-tasks', items: prepareTasks },
   { name: 'reading', items: readingLinks },
+  { name: 'home-items', items: homeRooms.flatMap((r) => r.items) },
+  { name: 'pantry', items: pantryCategories },
 ];
