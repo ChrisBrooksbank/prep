@@ -7,6 +7,7 @@ import {
 } from '../logic/crisis';
 import { householdLine, normaliseProfile } from '../logic/profile';
 import { getStore } from '../storage/instance';
+import { renderCallPanel } from './crisis-call';
 import { renderDoPanel } from './crisis-do';
 import { renderKnowPanel } from './crisis-know';
 
@@ -21,16 +22,6 @@ function el<K extends keyof HTMLElementTagNameMap>(
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
-}
-
-function placeholderPanel(tab: CrisisTab): HTMLElement {
-  const panel = el('div', 'crisis-panel');
-  panel.id = `crisis-panel-${tab}`;
-  panel.setAttribute('role', 'tabpanel');
-  panel.setAttribute('aria-labelledby', `crisis-tab-${tab}`);
-  panel.tabIndex = 0;
-  panel.append(el('p', '', `${CRISIS_TAB_LABELS[tab]} content is coming.`));
-  return panel;
 }
 
 /** Crisis mode shell: banner, household line, panel area and bottom tabs. No animation, no network. */
@@ -62,15 +53,14 @@ export async function renderCrisis(): Promise<HTMLElement> {
     elapsed.textContent = elapsedBannerText(startedAt, Date.now());
   });
   const knowPanel = renderKnowPanel();
+  const callPanel = renderCallPanel(profile);
   const select = (tab: CrisisTab): void => {
     for (const [name, b] of buttons) {
       const on = name === tab;
       b.setAttribute('aria-selected', String(on));
       b.tabIndex = on ? 0 : -1;
     }
-    panelHost.replaceChildren(
-      tab === 'do' ? doPanel : tab === 'know' ? knowPanel : placeholderPanel(tab),
-    );
+    panelHost.replaceChildren(tab === 'do' ? doPanel : tab === 'know' ? knowPanel : callPanel);
     root.dataset.tab = tab;
   };
   for (const tab of CRISIS_TABS) {

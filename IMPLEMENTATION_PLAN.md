@@ -38,7 +38,7 @@ Codebase is empty (no package.json, no src). Everything below is unimplemented. 
 - [x] Do tab: playbook chips, primary contact card, ordered tickable steps with sub-notes, persisted ticks, reset playbook, playbook start time, timer status lines (spec: crisis-mode.md)
 - [x] Power cut playbook content complete with all required steps and gas-hob condition (spec: crisis-mode.md)
 - [x] Know tab: single-open accordion, distinct danger lines, source + lastChecked per topic, First aid links to Prepare task "Book a first aid course" (spec: crisis-mode.md)
-- [ ] Call tab: cards with tappable `tel:` and selectable plain text; water company and GP from profile (spec: crisis-mode.md)
+- [x] Call tab: cards with tappable `tel:` and selectable plain text; water company and GP from profile (spec: crisis-mode.md)
 - [ ] Automated crisis check: no animation, no canvas, no external requests; axe check on each tab (add @axe-core/playwright) (spec: crisis-mode.md)
 - [ ] Smoke tests: tick step, reload, persists; profile change removes gas hob step; offline tabs work (spec: crisis-mode.md)
 
